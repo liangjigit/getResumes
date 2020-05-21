@@ -1,0 +1,1831 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <meta charset="UTF-8">
+    <title>爱慕人才内聘</title>
+    <meta http-equiv="Access-Control-Allow-Origin" content="*" />
+    <link rel="stylesheet" href="https://unpkg.com/element-ui/lib/theme-chalk/index.css">
+    <link rel="stylesheet" href="css/index.css">
+</head>
+
+<body>
+    <div id="app" v-cloak>
+        <div class="remarks" v-if="needAddRemarks">
+            <div class="remarks-add">
+                <span style="font-size: 18px;position: relative;left: 10px;">备注信息</span>
+                <img src="img/click-x.png" @click="closeRemarks" style="width: 40px;height: 40px;position: absolute;top: 1px;right: 1px;cursor: pointer;" alt="">
+            </div>
+            <div class="add-remarks">
+                <textarea v-model="remarksText"></textarea>
+            </div>
+            <div style="display: flex;justify-content: space-around">
+                <el-button type="primary" @click="postRemarks">确定添加</el-button>
+                <el-button type="info" @click="closeRemarks">取消</el-button>
+            </div>
+        </div>
+        <div class="remarks" v-if="needSeeRemarks">
+            <div>
+                <span style="font-size: 18px;position: relative;left: 10px;top: 10px;">备注信息</span>
+                <img @click="closeRemarks" src="img/click-x.png" style="width: 40px;height: 40px;position: absolute;top: 1px;right: 1px;cursor: pointer;" alt="">
+            </div>
+            <div class="remark-box">
+                <div style="width: 30%;">时间</div>
+                <div style="width: 70%;">备注内容</div>
+            </div>
+            <ul style="padding: 0;list-style: none;position: relative;top: 30px;text-align: left;">
+                <li v-for="item in remarksArr" style="display: flex;margin: 20px 0;">
+                    <div style="width: 30%;padding-left: 20px;">{{item.createDate | changeTime}}</div>
+                    <div style="width: 70%;">{{item.content}}</div>
+                </li>
+            </ul>
+        </div>
+        <div class="remarks" v-if="needSeeRemarks" style="margin-top:130px;border:0;background-color: white;height: 40px;text-align: center;z-index: 99999;">
+            <el-button type="primary" @click="postMoreRemarks">添加备注</el-button>
+        </div>
+        <el-container height="100%">
+            <el-aside width="80px" height="100%">
+                <div :class="{'aside-css':initPage}" style="cursor: pointer;margin-top: -380px;" @click="changeInit">简历管理</div>
+                <div :class="{'aside-css':!initPage}" style="cursor: pointer;" @click="changeInitFalse">标签管理</div>
+            </el-aside>
+            <el-container>
+                <el-header>
+                    <div style="position: absolute;color: #656565;font-size: 18px;">{{title}}</div>
+                    <div style="position: absolute;right: 150px;display: flex;justify-content: center;align-items: center;">
+                        <!-- <el-avatar src="" size="large"></el-avatar> -->
+                        <span>{{usernametop}}</span>
+                    </div>
+                    <div style="cursor: pointer;" @click="logOut">退出登录</div>
+                </el-header>
+                <!-- <div class="show-list"> -->
+                <el-main style="position: relative;z-index: 999;">
+                    <div class="resume-management" v-show="initPage">
+                        <el-row :gutter="20" style="line-height: 45px;border-top: 1px solid #edecec;margin: 0;font-size: 'Arial Normal', 'Arial';">
+                            <el-col :span="2">
+                                <div class="grid-content bg-purple" style="float: right;">学历</div>
+                            </el-col>
+                            <el-col :span="16">
+                                <ul id="edu" style="display: flex;flex-wrap: wrap;margin: 0;padding: 0;cursor: pointer;">
+                                    <li ref="edu" v-for="(item,index) in education" :class="{'change':index == clickEindex}" :style="clickEstyle" @click="getEducation($event,index)">
+                                        {{item}}
+                                    </li>
+                                </ul>
+                            </el-col>
+                            <el-col :span="6">
+                                <el-input v-model="searchInput.phone" placeholder="请输入手机号/姓名/工号" style="width: 80%;" @keyup.enter.native="searchPnc"></el-input>
+                                <span @click="searchPnc" style="cursor: pointer;">搜索</span>
+                            </el-col>
+                        </el-row>
+                        <el-row :gutter="20" style="line-height: 45px;border-top: 1px solid #edecec;margin: 0;font-size: 'Arial Normal', 'Arial';">
+                            <el-col :span="2">
+                                <div class="grid-content bg-purple" style="float: right;">性别</div>
+                            </el-col>
+                            <el-col :span="22">
+                                <ul id="sex" style="display: flex;flex-wrap: wrap;margin: 0;padding: 0;">
+                                    <li v-for="(item,index) in sex" :class="{'change':index == clickSindex}" style=" list-style: none;margin-right: 30px;cursor: pointer; " @click="getSex(index) ">
+                                        {{item}}
+                                    </li>
+                                </ul>
+                            </el-col>
+                        </el-row>
+                        <el-row :gutter="20 " style="line-height: 45px;border-top: 1px solid #edecec;margin: 0;font-size: 'Arial Normal', 'Arial'; ">
+                            <el-col :span="2">
+                                <div class="grid-content bg-purple" style="float: right;">技能标签</div>
+                            </el-col>
+                            <el-col :span="22">
+                                <ul id="lable" style="display: flex;flex-wrap: wrap;margin: 0;padding: 0;cursor: pointer; ">
+                                    <li v-for="(item,index) in allLables " :class="{'change':index==clickLindex}" @click="getLable($event,item,index)" :style="clickLstyle">
+                                        {{item.lableName}}
+                                    </li>
+                                </ul>
+                            </el-col>
+                        </el-row>
+                        <el-row :gutter="20 " style="line-height: 45px;border-top: 1px solid #edecec;margin: 0;font-size: 'Arial Normal', 'Arial'; ">
+                            <el-col :span="2">
+                                <div class="grid-content bg-purple" style="float: right;">竞聘岗位</div>
+                            </el-col>
+                            <el-col :span="22">
+                                <div style="display: flex;position: relative;top: 8px;">
+                                    <input type="text" v-model="searchCan.intention" style="width: 250px;height: 25px;">
+                                </div>
+                            </el-col>
+                        </el-row>
+                        <el-row :gutter="20" style="line-height: 45px;border-top: 1px solid #edecec;margin: 0;font-size: 'Arial Normal', 'Arial';border-bottom: 2px solid #656565;padding-bottom: 7px;">
+                            <el-col :span="2">
+                                <div class="grid-content bg-purple" style="float: right;">发布时间</div>
+                            </el-col>
+                            <el-col :span="22">
+                                <ul style="display: flex;flex-wrap: wrap;margin: 0;padding: 0;">
+                                    <li style="list-style: none;margin-right: 30px;">
+                                        <div class="block">
+                                            <!-- <el-date-picker :default-time="defaultTime" value-format="yyyy/MM/dd" @change="getSeTime" v-model="timeValue" type="daterange" align="right" unlink-panels range-separator="至" start-placeholder="开始日期" end-placeholder="结束日期" :picker-options="pickerOptions">
+                                            </el-date-picker> -->
+                                            <el-date-picker @change="getSeTimeStart" value-format="yyyy/MM/dd" v-model="timeValueStart" align="left" type="date" placeholder="开始日期" :picker-options="pickerOptions">
+                                            </el-date-picker>
+                                            <el-date-picker @change="getSeTimeEnd" value-format="yyyy/MM/dd" v-model="timeValueEnd" type="date" placeholder="至今">
+                                            </el-date-picker>
+                                        </div>
+                                    </li>
+                                    <li style="list-style: none;margin-left:300px;">
+                                        <el-button type="primary" @click="filterInfo">筛选</el-button>
+                                        <el-button type="info" @click="emptyInfo">清空选择</el-button>
+                                    </li>
+                                </ul>
+                            </el-col>
+                        </el-row>
+                        <div style="margin-left: 15px;">
+                            <div style="position: relative;right: 558px;font-size: 14px;top: 45px;z-index: 99;line-height: 20px;color: #909399;font-family: Microsoft YaHei;font-weight: 999;">选择</div>
+                            <template>
+                                <el-table
+                                  ref="multipleTableResume"
+                                  stripe
+                                  :data="allResume"
+                                  tooltip-effect="dark"
+                                  style="width: 100%;"
+                                  @select="deleteThisResume"
+                                  :indeterminate="true"
+                                  v-model="selectIndex"
+                                  >
+                                  <el-table-column
+                                    type="selection"
+                                    width="50">
+                                  </el-table-column>
+                                  <el-table-column
+                                    type="index"
+                                    label="序号"
+                                    :index="indexMethod"
+                                    width="50">
+                            </el-table-column>
+                            <el-table-column prop="name" label="姓名" width="60">
+                            </el-table-column>
+                            <el-table-column prop="gender" label="性别" width="50">
+                            </el-table-column>
+                            <el-table-column prop="code" label="工号" width="80">
+                            </el-table-column>
+                            <el-table-column prop="phone" label="手机号码" width="100">
+                            </el-table-column>
+                            <el-table-column prop="email" label="邮箱" width="160">
+                            </el-table-column>
+                            <el-table-column prop="education" label="学历" width="80">
+                            </el-table-column>
+                            <el-table-column prop="intention" label="竞聘岗位" width="100">
+                            </el-table-column>
+                            <el-table-column label="技能标签" width="260">
+                                <template slot-scope="scope">
+                                    {{scope.row.lableid}}
+                                </template>
+                            </el-table-column>
+                            <el-table-column label="操作" width="100">
+                                <template slot-scope="scope">
+                                    <el-button
+                                    @click.native.prevent="downloadResume(scope.$index, allResume)"
+                                    type="text"
+                                    size="small">
+                                    下载
+                                    </el-button>
+                                    <el-button
+                                    @click.native.prevent="deleteResume(scope.$index, allResume)"
+                                    type="text"
+                                    size="small">
+                                    删除
+                                    </el-button>
+                                </template>
+                            </el-table-column>
+                            <el-table-column label="备注" width="50">
+                                <template slot-scope="scope">
+                                    <el-button type="text" @click="addRemarks(scope.row.isRemarks,scope.row)">
+                                        {{scope.row.isRemarks == 0 ? '添加' : '查看'}}
+                                    </el-button>
+                                </template>
+                            </el-table-column>
+                            </el-table>
+                            <div v-if="showDeleDown" style="display: flex;justify-content: left;margin-top: 20px;line-height: 40px;margin-left: 18px;">
+                                <el-checkbox style="line-height: 40px;margin-right: 20px;" v-model="checked" @change="toggleSelection()">全选</el-checkbox>
+                                <el-button @click="deleteChoiceResume">删除</el-button>
+                                <el-button @click="downloadMoreResume">下载</el-button>
+                            </div>
+                            </template>
+                            <div v-if="showPage" class="block " style="position: relative;line-height: 30px;">
+                                <el-row>
+                                    <el-col :span="24" style="display: flex;justify-content: center;">
+                                        <el-pagination :pager-count="10" layout="total,prev, pager, next, jumper" :current-page.sync="currentPage1" :total="allResumeMember" :page-size="params.size" @prev-click="getPrevResume" @next-click="getNextResume" @current-change="changeCurrentResume">
+                                        </el-pagination>
+                                        <el-button style="line-height: 5px;margin-left: 15px;" type="primary">确定</el-button>
+                                    </el-col>
+                                </el-row>
+                                <el-row>
+                                    <el-col :span="24" style="display: flex;justify-content: center;">
+                                        <div style="font-size: 14px;color: #606266;">共&nbsp;&nbsp;{{allResumeMember | totalLablePage}}&nbsp;&nbsp;页</div>
+                                    </el-col>
+                                </el-row>
+
+                            </div>
+                        </div>
+                    </div>
+                    <div class="label-management " v-show="!initPage">
+                        <el-row :gutter="20" style="line-height: 60px;border-top: 1px solid #edecec;margin: 0;font-size: 'Arial Normal', 'Arial';">
+                            <el-col :span="6">
+                                <div class="grid-content bg-purple" style="margin-left:-150px">标签管理</div>
+                            </el-col>
+                        </el-row>
+                        <div>
+                            <el-row :gutter="20" style="line-height: 60px;border-top: 1px solid #edecec;border-bottom: 1px solid #edecec;margin: 0;">
+                                <el-col :span="6">
+                                    <div class="grid-content bg-purple" style="margin-left:-120px">
+                                        <el-button type="primary" @click="addLabel">添加标签</el-button>
+                                    </div>
+                                </el-col>
+                            </el-row>
+                        </div>
+                        <div style="margin-left: 40px;">
+                            <div style="position: relative;right: 515px;font-size: 14px;top: 45px;z-index: 99;line-height: 20px;color: #909399;font-family: Microsoft YaHei;font-weight: 999;">选择</div>
+                            <template>
+                                <el-table
+                                  ref="multipleTable"
+                                  stripe
+                                  :data="tableData"
+                                  tooltip-effect="dark"
+                                  style="width: 100%"
+                                  @select-all="deleteAll"
+                                  @select="deleteChoice">
+                                  <el-table-column
+                                    type="selection" 
+                                    width="110">
+                                  </el-table-column>
+                                  <el-table-column
+                                    type="index"
+                                    :index="indexMethods"
+                                    label="序号"
+                                    width="240">
+                            </el-table-column>
+                            <el-table-column prop="lableName" label="标签名称" width="240">
+                            </el-table-column>
+                            <el-table-column label="操作" width="240">
+                                <template slot-scope="scope">
+                                    <el-button
+                                    @click.native.prevent="deleteLable(scope.$index, tableData)"
+                                    type="text"
+                                    size="small">
+                                    删除
+                                    </el-button>
+                                </template>
+                            </el-table-column>
+                            </el-table>
+                            <div style="display: flex;justify-content: left;margin-top: 20px;cursor: pointer;margin-left: 48px;">
+                                <el-checkbox style="line-height: 40px;margin-right: 20px;" v-model="checkedLable" @change="toggleSelectionLable()">全选</el-checkbox>
+                                <el-button @click="deleteChoiceLable" style="cursor: pointer;">删除</el-button>
+                            </div>
+                            </template>
+                            <div class="block" style="position: relative;line-height: 30px;">
+                                <el-row>
+                                    <el-col :span="24" style="display: flex;justify-content: center;">
+                                        <el-pagination :pager-count="10" layout="total,prev, pager, next, jumper" :current-page="currentPage" :total="allLableMember" :page-size="params.size" @prev-click="getPrevLable" @next-click="getNextLable" @current-change="changeCurrent">
+                                        </el-pagination>
+                                        <el-button style="line-height: 5px;margin-left: 10px;" type="primary">确定</el-button>
+                                    </el-col>
+                                </el-row>
+                                <el-row>
+                                    <el-col :span="24" style="display: flex;justify-content: center;">
+                                        <div style="font-size: 14px;color: #606266;">共&nbsp;&nbsp;{{allLableMember | totalLablePage}}&nbsp;&nbsp;页</div>
+                                    </el-col>
+                                </el-row>
+                            </div>
+                        </div>
+                    </div>
+                </el-main>
+                <!-- </div> -->
+                <!-- 简历模块 -->
+                <div class="show-resume" style="position: fixed;z-index: -9999999; width: 595px;height:842px;margin-left: 20%;overflow: auto;">
+                    <div class="test" id="test">
+                        <div style="font-size: 20px;color: red;margin-left: 3%;">AIMER<br>
+                        </div>
+                        <hr>
+                        <div style="display: flex;justify-content: center;">
+                            <div style="width: 5%;"></div>
+                            <div class="left" style="width: 25%;">
+                                <div style="font-size: 25px;margin-bottom: 15px;">{{soleData.name}}</div>
+                                <div style="font-size: 15px;margin-bottom: 30px;">内聘岗位：{{soleData.intention}}</div>
+                                <div style="font-size: 14px;margin-bottom: 5px;">{{soleData.phone}}</div>
+                                <div style="font-size: 14px;margin-bottom: 30px;">{{soleData.email}}</div>
+                                <div style="width:100%;margin-bottom: 30px;">
+                                    <img :src="soleData.pageUrl" alt="" width="80%">
+                                </div>
+                                <div style="font-size: 14px;margin-bottom: 5px;">身高：{{soleData.height}}</div>
+                                <div style="font-size: 14px;margin-bottom: 5px;">体重：{{soleData.weight}}</div>
+                                <div style="font-size: 14px;margin-bottom: 5px;">胸围：{{soleData.chest}}</div>
+                                <div style="font-size: 14px;margin-bottom: 5px;">腰围：{{soleData.hips}}</div>
+                                <div style="font-size: 14px;margin-bottom: 100px;">臀围：{{soleData.waist}}</div>
+                                <div style="font-size: 12px;">
+                                    <p>技能标签:</p>
+                                    <ul style="list-style: none;">
+                                        <li v-for="item in downloadLableId" style="color:#808080;border: 1px solid;border-radius: 2px;margin-bottom: 10px;text-align: center;">{{item}}</li>
+                                    </ul>
+                                </div>
+                            </div>
+                            <div style="width: 10%;"></div>
+                            <div class="right" style="width: 55%;">
+                                <div style="border-bottom: 1px solid;margin-bottom: 10px;">
+                                    <div style="font-size: 21px;margin-bottom: 5px;"> <span style="font-size: 15px;">|</span> 基本信息</div>
+                                    <div style="font-size: 12px;margin-bottom: 5px;">
+                                        <span>性别：{{soleData.gender}}</span>
+                                        <span>学历：{{soleData.education}}</span>
+                                        <span>工号：{{soleData.code}}</span>
+                                    </div>
+                                    <div style="font-size: 12px;margin-bottom: 5px;">部门：{{soleData.department}}</div>
+                                    <div style="font-size: 12px;margin-bottom: 5px;">目前所在岗位：{{soleData.post}}</div>
+                                    <div style="font-size: 12px;margin-bottom: 30px;">曾任职岗位：{{soleData.formerPost}}</div>
+                                </div>
+                                <div style="border-bottom: 1px solid;">
+                                    <div style="font-size: 21px;margin-bottom: 5px;"><span style="font-size: 15px;">|</span>竞聘信息</div>
+                                    <div style="margin-bottom: 5px;">①相关技能介绍
+                                        <div style="font-size: 12px;">{{soleData.skill}}</div>
+                                    </div>
+                                    <div style="margin-bottom: 30px;">②工作履历
+                                        <div style="font-size: 12px;">{{soleData.experience}}</div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div style="width: 5%;"></div>
+                        </div>
+                    </div>
+                </div>
+            </el-container>
+        </el-container>
+    </div>
+    <script src="https://cdn.jsdelivr.net/npm/vue@2.6.11"></script>
+    <script src="https://unpkg.com/element-ui/lib/index.js"></script>
+    <script src="https://unpkg.com/axios/dist/axios.min.js"></script>
+    <script src="js/jquery.min.js"></script>
+    <script src="http://html2canvas.hertzen.com/dist/html2canvas.min.js"></script>
+    <script>
+        // axios.defaults.baseURL = 'http://10.1.7.52:8080/api';
+        //生产环境
+        axios.defaults.baseURL = 'http://np.aimergroup.com:8081/api/'
+        new Vue({
+            el: '#app',
+            data: {
+                //判断用户当前所选择的状态
+                status: {
+                    //普通状态
+                    a: true,
+                    //进行了模糊摁扭查询的搜索摁扭
+                    b: false,
+                    //进行了少选摁扭查询
+                    c: false
+                },
+                //简历页初始页页数页数 true false false
+                currentPages: 1,
+                //搜索页的页数
+                currentPages1: 1,
+                //筛选页的页数
+                currentPages2: 1,
+                //简历页初始页不同页面请求简历数据参数 true false false
+                resumePageSize: {
+                    page: 1,
+                    size: 10
+                },
+                //筛选查询条件的参数
+                searchCan: {
+                    page: '1',
+                    size: '10',
+                    post: '',
+                    gender: '',
+                    lable: '',
+                    intention: ''
+                },
+                //模糊查询的参数
+                searchInput: {
+                    page: '1',
+                    size: '10',
+                    phone: ''
+                },
+                currentPage1: 1,
+                //岗位模糊查询使用
+                postInput: '',
+                //保存全部标签id
+                idArr: [],
+                //用于判断全选删除是否选中
+                checkedLable: false,
+                checked: false,
+                selectIndex: true,
+                // 标签样式控制
+                clickEstyle: 'list-style:none;margin-right:30px;',
+                clickLstyle: 'list-style:none;margin-right:30px;',
+                //保存当前用户备份的数组
+                remarksArr: [],
+                //发送的备注Id
+                postRemarksId: '',
+                //备注框的选择
+                needAddRemarks: false,
+                needSeeRemarks: false,
+                //添加的备注
+                remarksText: '',
+                //按是否全选摁扭
+                isAllSelect: true,
+                //用于判断搜索数据为0时隐藏
+                showDeleDown: true,
+                showPage: true,
+                //默认时间
+                defaultTime: ['00:00:00', '23:59:59'],
+                //当前用户姓名
+                usernametop: '',
+                //对筛选信息索引进行保存
+                clickEindex: '0',
+                clickSindex: '0',
+                clickLindex: '0',
+                //判断姓名能否传输
+                isNumber: false,
+                //判断手机号是否输入正确
+                isPhoneMember: false,
+                //获取初始页面
+                initPage: true,
+                //控制简历页面
+                resumePage: false,
+                //获取单人简历
+                soleData: {},
+                //全部的简历信息
+                allResume: [],
+                //学历初始化
+                education: ['全部', '博士', '硕士', '本科', '专科', '高中', '中专/中技', '初中及以下'],
+                //性别初始化
+                sex: ['全部', '男', '女'],
+                //获取全部标签的数据数组
+                allLables: [{
+                    lableName: '全部'
+                }],
+                //默认当前标题
+                title: '简历管理',
+                //保存所有标签的数组
+                tableData: [],
+                multipleSelection: [],
+                //用户选择要删除的标签
+                selectId: '',
+                resumeSelectId: [],
+                //返回标签的所有条数
+                allLableMember: 0,
+                allResumeMember: 0,
+                //每次请求新一页标签的参数
+                params: {
+                    page: 1,
+                    size: 10
+                },
+                //当前页数
+                currentPage: 1,
+                //获取当前登录用户的username
+                username: '',
+                //时间选择器
+                pickerOptions: {
+                    disabledDate(time) {
+                        return time.getTime() > Date.now();
+                    },
+                    shortcuts: [{
+                        text: '一周内',
+                        onClick(picker) {
+                            const date = new Date();
+                            date.setTime(date.getTime() - 3600 * 1000 * 24 * 7);
+                            picker.$emit('pick', date);
+                        }
+                    }, {
+                        text: '一个月内',
+                        onClick(picker) {
+                            const date = new Date();
+                            date.setTime(date.getTime() - 3600 * 1000 * 24 * 30);
+                            picker.$emit('pick', date);
+                        }
+                    }]
+                },
+                timeValueStart: '',
+                timeValueEnd: '',
+                //用于保存用户筛选时选择的标签数组
+                labelArr: [],
+                //删除简历时候的个人id
+                deleteResumeId: '',
+                //用于保存学历数组筛选
+                educationArr: [],
+                //发送5个或以上简历
+                sendFive: [],
+                sendFiveString: '',
+                sendMoreFive: [],
+                moreData: [],
+                //保存批量下载的数组
+                resumeMoreArr: [],
+                //保存批量下载的字符
+                resumeMoreString: '',
+                //保存返回的简历图片
+                getAllResumePicArr: [],
+                getAllResumePic: '',
+                //获取选中下载的循环索引
+                forEachIndex: 0,
+                moreDataIndex: 0,
+                moreDataLength: 0,
+                //在下载简历时用户的标签储存数组
+                downloadLableId: [],
+                //设置高亮时用到的数据
+                tableDataSecond: [],
+                //下载简历时候的时间
+                resumeTime: ''
+            },
+            methods: {
+                //当页码改变时
+                tableRowClassName({
+                    row,
+                    rowIndex
+                }) {
+                    //console.log(row, rowIndex)
+                },
+                //处理序号的方法
+                indexMethod(index) {
+                    if (this.status.a == true && this.status.b == false && this.status.c == false) {
+                        return (this.currentPages - 1) * 10 + index + 1;
+                    } else if (this.status.a == false && this.status.b == true && this.status.c == false) {
+                        return (this.currentPages1 - 1) * 10 + index + 1;
+                    } else if (this.status.a == false && this.status.b == false && this.status.c == true) {
+                        return (this.currentPages2 - 1) * 10 + index + 1;
+                    }
+                    // return index * 2
+                },
+                indexMethods(index) {
+                    return (this.currentPage - 1) * 10 + index + 1;
+                    // return index * 2
+                },
+                toggleSelection() {
+                    //console.log(this.checked)
+                    if (this.checked) {
+                        // //console.log(this.allResume)
+                        for (let item of this.allResume) {
+                            // //console.log(item)
+                            this.resumeSelectId.push(item.id)
+                        }
+                        //console.log(this.resumeSelectId)
+                        this.$refs.multipleTableResume.toggleAllSelection();
+                    } else {
+                        this.resumeSelectId = []
+                        this.$refs.multipleTableResume.clearSelection();
+                    }
+                },
+                toggleSelectionLable() {
+                    //console.log(this.checkedLable)
+                    if (this.checkedLable) {
+                        this.$refs.multipleTable.toggleAllSelection();
+                    } else {
+                        this.$refs.multipleTable.clearSelection();
+                    }
+                },
+                //多次添加备注
+                postMoreRemarks() {
+                    const _this = this
+                    _this.needSeeRemarks = false
+                    _this.needAddRemarks = true
+                    _this.remarksText = ''
+                    _this.postRemarks()
+                },
+                //发送当前的备注
+                postRemarks() {
+                    const _this = this
+                        // //console.log(_this.postRemarksId, _this.remarksText)
+                    axios.post('/remarks/save', null, {
+                        params: {
+                            resumeId: _this.postRemarksId,
+                            content: _this.remarksText
+                        }
+                    }).then(function(res) {
+                        //console.log(res)
+                        if (res.data.code == 200) {
+                            _this.$message({
+                                type: 'success',
+                                message: '添加成功!'
+                            });
+                            if (_this.status.a == true && _this.status.b == false && _this.status.c == false) {
+                                _this.getAllResume()
+                                _this.closeRemarks().click()
+                            } else if (_this.status.a == false && _this.status.b == true && _this.status.c == false) {
+                                // //console.log('我进来了')
+                                axios.post('resume/resumePage', null, {
+                                    params: _this.searchInput
+                                }).then(function(res) {
+                                    // //console.log(res)
+                                    if (res.data.code == 200) {
+                                        _this.showDeleDown = true
+                                        _this.showPage = true
+                                        _this.allResume = res.data.data
+                                        _this.allResume.map(function(item) {
+                                            item.gender == 0 ? item.gender = '女' : item.gender = '男'
+                                        })
+                                        _this.allResumeMember = parseInt(res.data.msg)
+                                        _this.closeRemarks().click()
+                                    }
+                                })
+                            } else if (_this.status.a == false && _this.status.b == false && _this.status.c == true) {
+                                axios.post('resume/resumePage', null, {
+                                    params: _this.searchCan
+                                }).then(function(res) {
+                                    // //console.log(res)
+                                    if (res.data.code == 200) {
+                                        _this.showDeleDown = true
+                                        _this.showPage = true
+                                        _this.allResume = res.data.data
+                                        _this.allResume.map(function(item) {
+                                            item.gender == 0 ? item.gender = '女' : item.gender = '男'
+                                        })
+                                        _this.allResumeMember = parseInt(res.data.msg)
+                                        _this.closeRemarks().click()
+                                    }
+                                })
+                            }
+                        } else if (res.data.code == 505) {
+                            _this.loserToken()
+                        }
+                    })
+                },
+                //关闭备注弹框
+                closeRemarks() {
+                    this.needAddRemarks = false
+                    this.needSeeRemarks = false
+                    this.remarksText = ''
+                },
+                //添加备注
+                addRemarks(a, arr) {
+                    const _this = this
+                    _this.postRemarksId = arr.id
+                    if (a == 0) {
+                        _this.needAddRemarks = true
+                        _this.remarksText = ''
+                    } else {
+                        axios.post('/remarks/findId', null, {
+                            params: {
+                                resumeId: arr.id
+                            }
+                        }).then(function(res) {
+                            //console.log(res)
+                            if (res.data.code == 200) {
+                                _this.remarksArr = res.data.data
+                            } else if (res.data.code == 505) {
+                                _this.loserToken()
+                            }
+                        })
+                        _this.needSeeRemarks = true
+
+                    }
+                },
+                //删除全部
+                deleteSelection() {
+                    const _this = this
+                        //console.log(_this.allResume)
+                        //console.log(_this.checked)
+                },
+                //删除用户当前选择的简历
+                deleteThisResume(selection, row) {
+                    // //console.log(selection, row)
+                    // //console.log(selection.length)
+                    if (selection.length == 10) {
+                        this.checked = true
+                    } else {
+                        this.checked = false
+                    }
+                    let selectArr = []
+                    for (let item of selection) {
+                        // //console.log(item.id)
+                        selectArr.push(item.id)
+                    }
+                    this.resumeSelectId = selectArr
+                        //console.log(this.resumeSelectId)
+                },
+                //点击删除用户选择的简历
+                deleteChoiceResume() {
+                    // //console.log(111)
+                    const _this = this
+                        //console.log(this.resumeSelectId)
+                    if (_this.checked) {
+                        this.$confirm('此操作将永久删除当前所有简历, 是否继续?', '提示', {
+                            confirmButtonText: '确定',
+                            cancelButtonText: '取消',
+                            type: 'warning'
+                        }).then(() => {
+                            for (let item of _this.allResume) {
+                                //console.log(item.id)
+                                axios.post('/resume/deleteResumeById', null, {
+                                    params: {
+                                        resumeId: item.id
+                                    }
+                                }).then(function(res) {
+                                    //console.log(res)
+                                    if (res.data.code == 200) {
+                                        // _this.$message({
+                                        //     type: 'success',
+                                        //     message: '删除成功!'
+                                        // });
+                                    } else if (res.data.code == 505) {
+                                        _this.loserToken()
+                                    }
+                                })
+                            }
+                            _this.getAllResume()
+                            _this.changeCurrentResume(1)
+                        }).catch(() => {
+                            this.$message({
+                                type: 'info',
+                                message: '已取消删除'
+                            });
+                        });
+                    } else {
+                        if (this.resumeSelectId.length == 0) {
+                            // //console.log('未选择简历')
+                            this.$alert('请选择您要删除的简历', '', {
+                                confirmButtonText: '确定',
+                                // callback: action => {
+                                //     this.$message({
+                                //         type: 'info',
+                                //         message: `action: ${ action }`
+                                //     });
+                                // }
+                            });
+                        } else {
+                            this.$confirm('此操作将永久删除您选中的简历, 是否继续?', '提示', {
+                                confirmButtonText: '确定',
+                                cancelButtonText: '取消',
+                                type: 'warning'
+                            }).then(() => {
+                                for (let item of _this.resumeSelectId) {
+                                    //console.log(item)
+                                    axios.post('/resume/deleteResumeById', null, {
+                                        params: {
+                                            resumeId: item
+                                        }
+                                    }).then(function(res) {
+                                        //console.log(res)
+                                        if (res.data.code == 200) {
+                                            // _this.$message({
+                                            //     type: 'success',
+                                            //     message: '删除成功!'
+                                            // });
+                                            _this.getAllResume()
+                                        } else if (res.data.code == 505) {
+                                            _this.loserToken()
+                                        }
+                                    })
+                                }
+                            }).catch(() => {
+                                this.$message({
+                                    type: 'info',
+                                    message: '已取消删除'
+                                });
+                            });
+                        }
+
+                    }
+                },
+                //下载个人简历
+                async downloadResume(i, arr) {
+                    // //console.log(i, arr, arr[i].id)
+                    const _this = this
+                    _this.deleteResumeId = arr[i].id
+                    await _this.getSoleResume()
+                    await _this.getCanvas()
+
+                },
+                async downloadMoreResume() {
+                    this.$loading({
+                        lock: true,
+                        text: '努力下载打包中，请耐心等待',
+                        spinner: 'el-icon-loading',
+                        background: 'rgba(0, 0, 0, 0.7)'
+                    })
+                    const _this = this
+                    _this.sendFive = _this.resumeSelectId
+                    _this.sendFiveString = _this.sendFive.join(',')
+                        // //console.log(_this.sendMoreFive.length)
+                    await _this.getFiveBase()
+                },
+                async getFiveBase() {
+                    const _this = this
+                        // if (_this.sendMoreFive.length == 0) {
+                        // }
+                    await axios.post('resume/resumeDownload', null, {
+                        params: {
+                            resumeId: _this.sendFiveString
+                        }
+                    }).then(function(res) {
+                        // //console.log(JSON.parse(res.data.data.data))
+                        if (res.data.code == 200) {
+                            _this.moreData = JSON.parse(res.data.data.data)
+                                // //console.log(_this.moreData)
+                            for (let item of _this.moreData) {
+                                // //console.log(item)
+                                item.gender == 0 ? item.gender = '女' : item.gender = '男'
+                            }
+                            // _this.resumeMoreArr = []
+                            _this.moreDataLength = _this.moreData.length
+                            _this.nanDownload()
+                        } else if (res.data.code == 505) {
+                            _this.loserToken()
+                        }
+                    })
+                },
+                nanDownload() {
+                    const _this = this
+                        // //console.log(_this.moreData)
+                    _this.soleData = {}
+                    _this.soleData = _this.moreData[_this.moreDataIndex]
+                        //console.log(_this.soleData)
+                    if (_this.soleData.lableid) {
+                        let lableLength = _this.soleData.lableid.split(',').length
+                        _this.downloadLableId = _this.soleData.lableid.split(',').splice(0, lableLength - 1)
+                    }
+                    if (_this.soleData.createDate) {
+                        let date = new Date(_this.soleData.createDate)
+                            // //console.log(date.getFullYear())
+                        let year = date.getFullYear()
+                        let month = date.getMonth() + 1
+                        let day = date.getDate()
+                        let hours = date.getHours()
+                        let minutes = date.getMinutes()
+                        let second = date.getSeconds()
+                        _this.resumeTime = year + "-" + month + "-" + day + " " + hours + ":" + minutes
+                            // //console.log(_this.resumeTime)
+                    }
+                    setTimeout(() => {
+                        let test = $(".test").get(0);
+                        //console.log(test)
+                        // //console.log(_this.soleData, test)
+                        html2canvas(test, {
+                            allowTaint: true,
+                            logging: false,
+                            width: 595,
+                            height: 842
+                        }).then(function(canvas) {
+                            // //console.log(_this.saveAsPNG(canvas))
+                            // _this.resumeMoreArr.push(_this.saveAsPNG(canvas))
+                            // _this.resumeMoreString = _this.resumeMoreArr.join(',')
+                            // //console.log(_this.resumeMoreString)
+                            $.ajax({
+                                headers: {
+                                    "token": window.localStorage.getItem("token") //此处放置请求到的用户token
+                                },
+                                type: "post",
+                                url: 'http://np.aimergroup.com:8081/api/resume/saveResumeImage',
+                                dataType: "json", //后台返回值类型
+                                // contentType: "application/json", //如果提交的是json数据类型，则必须有此参数,表示提交的数据类型 
+                                 data: {
+                                    imgStr: _this.saveAsPNG(canvas)
+                                },
+
+                                async: false,
+                                success: function(data) {
+                                    //console.log(data.data[0])
+
+                                    // //console.log(i)
+                                    // window.open('http://np.aimergroup.com:8081/api/resume/uploadResume?resumeStr=' + data.data[0])
+
+                                    _this.getAllResumePicArr.push(data.data[0] + 'AIMERPERSONNEL' + _this.resumeTime + _this.soleData.name)
+                                    _this.getAllResumePic = _this.getAllResumePicArr.join(',')
+                                        //console.log(_this.moreDataIndex)
+                                    _this.moreDataIndex++
+                                        //console.log(_this.moreDataIndex)
+                                        //console.log(_this.moreDataLength)
+                                        if (_this.moreDataIndex == _this.moreDataLength) {
+                                            // //console.log(_this.getAllResumePic)
+                                            // //console.log(_this.soleData)
+                                            window.open('http://np.aimergroup.com:8081/api/resume/uploadResume?resumeStr=' + _this.getAllResumePic)
+                                                // this.loading.close();
+                                            window.location.reload()
+                                        }
+                                    setTimeout(() => {
+                                        _this.nanDownload()
+                                    }, 505)
+
+                                }
+                            });
+                        })
+                    }, 3000)
+                },
+                //获取指定单人的简历信息
+                async getSoleResume() {
+                    const _this = this
+                    await axios.post('resume/resumeDownload', null, {
+                        params: {
+                            resumeId: _this.deleteResumeId
+                        }
+                    }).then(function(res) {
+                        // //console.log(JSON.parse(res.data.data.data))
+                        // let objCan = typeof res.data.data == 'String' ? 
+                        if (res.data.code == 200) {
+                            _this.soleData = JSON.parse(res.data.data.data)[0]
+                            if (_this.soleData.lableid) {
+                                let lableLength = _this.soleData.lableid.split(',').length
+                                    // //console.log(_this.soleData.lableid.split(','))
+                                    // //console.log(_this.soleData.lableid.split(',').splice(0, lableLength - 1))
+                                _this.downloadLableId = _this.soleData.lableid.split(',').splice(0, lableLength - 1)
+                            }
+                            _this.soleData.gender == 0 ? _this.soleData.gender = '女' : _this.soleData.gender = '男'
+                                //console.log(_this.soleData)
+                        } else if (res.data.code == 505) {
+                            _this.loserToken()
+                        }
+                    })
+                },
+                //获取当前简历的canvas
+                getCanvas() {
+                    const _this = this
+                        //console.log(_this.soleData)
+                    let test = $(".test").get(0);
+                    //console.log(test)
+                    html2canvas(test, {
+                        allowTaint: true,
+                        logging: false,
+                        width: 595,
+                        height: 842
+                    }).then(function(canvas) {
+                        _this.downLoad(_this.saveAsPNG(canvas));
+                    })
+                },
+                saveAsPNG(canvas) {
+                    return canvas.toDataURL("image/png");
+                },
+                downLoad(url) {
+                    const _this = this
+                    var oA = document.createElement("a");
+                    oA.download = _this.soleData.name; // 设置下载的文件名，默认是'下载'
+                    oA.href = url;
+                    document.body.appendChild(oA);
+                    oA.click();
+                    oA.remove(); // 下载之后把创建的元素删除
+                },
+                //删除单个简历
+                deleteResume(index, table) {
+                    // //console.log(index, table)
+                    // //console.log(table[index].id)
+                    let deleteId = table[index].id
+                    const _this = this
+                    this.$confirm('此操作将永久个人简历, 是否继续?', '提示', {
+                        confirmButtonText: '确定',
+                        cancelButtonText: '取消',
+                        type: 'warning'
+                    }).then(() => {
+                        axios.post('/resume/deleteResumeById', null, {
+                            params: {
+                                resumeId: deleteId
+                            }
+                        }).then(function(res) {
+                            // //console.log(res)
+                            if (res.data.code == 200) {
+                                _this.$message({
+                                    type: 'success',
+                                    message: '删除成功!'
+                                });
+                                _this.getAllResume()
+                            } else if (res.data.code == 505) {
+                                _this.loserToken()
+                            }
+                        })
+                    }).catch(() => {
+                        this.$message({
+                            type: 'info',
+                            message: '已取消删除'
+                        });
+                    });
+
+                },
+                //搜索手机号，姓名，工号
+                searchPnc() {
+                    const _this = this
+                    _this.checked = false
+                    _this.status.a = false
+                    _this.status.b = true
+                    _this.status.c = false
+                    axios.post('resume/resumePage', null, {
+                        params: {
+                            page: 1,
+                            size: 10
+                        }
+                    }).then(function(res) {
+                        // //console.log(res)
+                        if (res.data.code == 200) {
+                            _this.currentPage1 = 1
+                                //从新获单页数据取进行渲染
+                            _this.allResume = res.data.data
+                                //获取全部信息条数供分页数据使用
+                            _this.allResumeMember = parseInt(res.data.msg)
+                                //将男女改变
+                            _this.allResume.map(function(item) {
+                                    item.gender == 0 ? item.gender = '女' : item.gender = '男'
+                                })
+                                //开始请求模糊查询
+                                // //console.log(_this.searchInput)
+                            axios.post('resume/resumePage', null, {
+                                params: _this.searchInput
+                            }).then(function(res) {
+                                //console.log(res)
+                                if (res.data.code == 200) {
+                                    if (res.data.data.length == 0) {
+                                        _this.showDeleDown = false
+                                        _this.showPage = false
+                                        _this.allResume = res.data.data
+                                    } else {
+                                        _this.showDeleDown = true
+                                        _this.showPage = true
+                                        _this.allResume = res.data.data
+                                        _this.allResume.map(function(item) {
+                                            item.gender == 0 ? item.gender = '女' : item.gender = '男'
+                                        })
+                                        _this.allResumeMember = parseInt(res.data.msg)
+                                    }
+                                }
+                            })
+                        } else if (res.data.code == 505) {
+                            _this.loserToken()
+                        }
+                    })
+                },
+                //信息筛选完成后进行网络请求
+                filterInfo() {
+                    const _this = this
+                    _this.checked = false
+                    _this.status.a = false
+                    _this.status.b = false
+                    _this.status.c = true
+                    axios.post('resume/resumePage', null, {
+                        params: {
+                            page: 1,
+                            size: 10
+                        }
+                    }).then(function(res) {
+                        //console.log(res.data.code)
+                        if (res.data.code == 200) {
+                            _this.currentPage1 = 1
+                                //从新获单页数据取进行渲染
+                            _this.allResume = res.data.data
+                                //获取全部信息条数供分页数据使用
+                            _this.allResumeMember = parseInt(res.data.msg)
+                                //将男女改变
+                            _this.allResume.map(function(item) {
+                                    item.gender == 0 ? item.gender = '女' : item.gender = '男'
+                                })
+                                // //console.log(_this.searchCan)
+                            axios.post('resume/resumePage', null, {
+                                params: _this.searchCan
+                            }).then(function(res) {
+                                //console.log(res)
+                                if (res.data.code == 200) {
+                                    if (res.data.data.length == 0) {
+                                        _this.showDeleDown = false
+                                        _this.showPage = false
+                                        _this.allResume = res.data.data
+                                    } else {
+                                        _this.showDeleDown = true
+                                        _this.showPage = true
+                                        _this.allResume = res.data.data
+                                        _this.allResume.map(function(item) {
+                                            item.gender == 0 ? item.gender = '女' : item.gender = '男'
+                                        })
+                                    }
+                                    // //console.log(_this.searchCan)
+                                    _this.allResumeMember = parseInt(res.data.msg)
+                                        // _this.currentPage1 = 1
+                                    _this.changeCurrentResume(1)
+                                }
+                            })
+
+                        } else if (res.data.code == 505) {
+                            _this.loserToken()
+                        }
+
+                    })
+                },
+                //清空选择的数据
+                emptyInfo() {
+                    window.location.reload()
+                },
+                //获取查询的标签
+                getLable(e, item, i) {
+                    if (i == 0) {
+                        this.clickLindex = '0'
+                        this.labelArr = []
+                        this.clickLstyle = 'list-style:none;margin-right:30px;'
+                        this.getAllLable()
+                    } else {
+                        // //console.log(item.id)
+                        this.clickLindex = '-1'
+                        let click_item = item.id
+                        if (this.labelArr.length == 0) {
+                            // //console.log(111)
+                            e.srcElement.style = 'color:#37c2b9;list-style:none;margin-right:30px'
+                                // this.clickLindex = i
+                            this.labelArr.push(click_item)
+                        } else {
+                            for (let i in this.labelArr) {
+                                if (this.labelArr[i] == click_item) {
+                                    e.srcElement.style = 'list-style:none;margin-right:30px'
+                                        // this.clickLindex = '-1'
+                                    this.labelArr.splice(i, 1)
+                                        //console.log(this.labelArr.length)
+                                    if (this.labelArr.length == 0) {
+                                        this.clickLindex = '0'
+                                    }
+                                } else {
+                                    e.srcElement.style = 'color:#37c2b9;list-style:none;margin-right:30px'
+                                        // this.clickLindex = i
+                                    this.labelArr = this.labelArr.filter(function(item) {
+                                        return item != click_item
+                                    })
+                                    this.labelArr.push(click_item)
+                                        //console.log(this.labelArr)
+                                }
+                            };
+                        }
+                    }
+                    this.searchCan.lable = this.labelArr.join(',')
+                        // //console.log(this.searchCan.lable)
+                },
+                //获取开始的时间
+                getSeTimeStart(data) {
+                    // //console.log(data)
+                    this.searchCan.start = data
+                    this.getSeTimeEnd()
+                        // this.searchCan.end = data[1]
+                        // //console.log(this.searchCan.start)
+                        // //console.log(this.searchCan.end)
+
+                },
+                //获取结束的时间
+                getSeTimeEnd(data) {
+                    if (data == undefined) {
+                        const date = new Date();
+                        let nowTime = date.getFullYear() + '/' + (date.getMonth() + 1) + '/' + date.getDate()
+                            // //console.log(nowTime)
+                        this.searchCan.end = nowTime
+                    } else {
+                        // //console.log(data)
+                        this.searchCan.end = data
+                    }
+                },
+                //获取到查询的学历
+                getEducation(e, i) {
+                    // this.clickEindex = i
+                    // //console.log(document.querySelector('#edu').children)
+                    let lis = document.querySelector('#edu').children
+                    if (i == 0) {
+                        for (let j = 0; j < lis.length; j++) {
+                            if (j == 0) {
+                                lis[j].style.color = '#37c2b9'
+                            } else {
+                                lis[j].style.color = 'black'
+                            }
+                        }
+                        this.clickEindex = '0'
+                        this.educationArr = []
+                            // this.clickEstyle = 'list-style:none;margin-right:30px;color:black'
+
+                    } else {
+                        lis[0].style.color = 'black'
+                            // //console.log(this.education[i])
+                            // this.searchCan.post = this.education[i]
+                        this.clickEindex = '-1'
+                        let click_item = this.education[i]
+                        if (this.educationArr.length == 0) {
+                            // //console.log(111)
+                            e.srcElement.style = 'color:#37c2b9;list-style:none;margin-right:30px'
+                                // this.clickLindex = i
+                            this.educationArr.push(click_item)
+
+                        } else {
+                            for (let i in this.educationArr) {
+                                if (this.educationArr[i] == click_item) {
+                                    e.srcElement.style = 'list-style:none;margin-right:30px'
+                                        // this.clickLindex = '-1'
+                                    this.educationArr.splice(i, 1)
+                                        // //console.log(this.educationArr.length)
+                                    if (this.educationArr.length == 0) {
+                                        lis[0].style.color = '#37c2b9'
+                                    }
+                                } else {
+                                    e.srcElement.style = 'color:#37c2b9;list-style:none;margin-right:30px'
+                                        // this.clickLindex = i
+                                    this.educationArr = this.educationArr.filter(function(item) {
+                                        return item != click_item
+                                    })
+                                    this.educationArr.push(click_item)
+                                        //console.log(this.educationArr)
+                                }
+                            };
+                        }
+                    }
+                    this.searchCan.post = this.educationArr.join(',')
+                        //console.log(this.searchCan.post)
+                },
+                //获取查询的性别
+                getSex(i) {
+                    this.clickSindex = i
+                    if (i == 0) {
+                        this.searchCan.gender = ''
+                            //console.log(this.searchCan.gender)
+                    } else {
+                        if (i == 1) {
+                            this.searchCan.gender = '1'
+                                //console.log(this.searchCan.gender)
+                        } else {
+                            this.searchCan.gender = '0'
+                                //console.log(this.searchCan.gender)
+                        }
+                    }
+                },
+                //退出登录
+                logOut() {
+                    // //console.log(111)
+                    axios.post('/user/signOut').then(function(res) {
+                        //console.log(res)
+                        if (res.data.code == 200) {
+                            // //console.log(window.localStorage.getItem('token'))
+                            if (window.localStorage.getItem('token')) {
+                                window.localStorage.removeItem('token')
+                                window.location.href = 'login.html'
+                            }
+                        }
+                    })
+                },
+                //添加标签
+                async addLabel() {
+                    const _this = this
+                    this.$prompt('标签名称', '', {
+                        confirmButtonText: '确认添加',
+                        cancelButtonText: '取消'
+                    }).then(({
+                        value
+                    }) => {
+                        axios.post('/lable/saveLable', null, {
+                            params: {
+                                lableName: value
+                            }
+                        }).then(function(res) {
+                            //console.log(res)
+                            if (res.data.code == 200) {
+                                _this.$message({
+                                    type: 'success',
+                                    message: res.data.data
+                                })
+                                axios.get('lable/findAllLable').then(function(res) {
+                                    // //console.log(res)
+                                    // //console.log(res.data.data.length)
+                                    if (res.data.code == 200) {
+                                        _this.allLableMember = res.data.data.length
+                                        let lastPage = Math.ceil((_this.allLableMember + 1) / 10)
+                                            // //console.log(lastPage)
+                                        _this.changeCurrent(lastPage)
+                                            // axios.get('lable/findAllLable', {
+                                            //     params: _this.params
+                                            // }).then(function(res) {
+                                            //     // //console.log(this)
+                                            //     if (res.data.code == 200) {
+                                            //         _this.tableDataSecond = res.data.data
+                                            //         let index = _this.tableDataSecond.length - 1
+                                            //             // //console.log(_this.tableDataSecond.length - 1)
+                                            //             // //console.log(_this.$refs.multipleTable.bodyWrapper.children[0].children[1].children[index])
+                                            //             // _this.$refs.multipleTable.data[index].style.backgroundColor = 'black'
+                                            //         let trArr = _this.$refs.multipleTable.bodyWrapper.children[0].children[1].children
+                                            //         for (let i in trArr) {
+                                            //             if (i == index) {
+                                            //                 trArr[i].style.className = 'change-back'
+                                            //             }
+                                            //             trArr[i].style.backgroundColor = ''
+                                            //         }
+                                            //     }
+                                            // })
+                                    }
+                                })
+
+                            } else if (res.data.code == 500) {
+                                _this.$message({
+                                    type: 'error',
+                                    message: res.data.msg
+                                })
+                            } else if (res.data.code == 505) {
+                                _this.loserToken()
+                            }
+                        })
+                    }).catch(() => {
+                        this.$message({
+                            type: 'info',
+                            message: '取消输入'
+                        });
+                    });
+
+                },
+                //删除单个标签
+                deleteLable(index, table) {
+                    //console.log(index, table)
+                    //console.log(table[index].id)
+                    let deleteId = table[index].id
+                    const _this = this
+                    this.$confirm('此操作将永久删除标签, 是否继续?', '提示', {
+                        confirmButtonText: '确定',
+                        cancelButtonText: '取消',
+                        type: 'warning'
+                    }).then(() => {
+                        // //console.log(_this.currentPage)
+                        axios.get('lable/findAllLable', {
+                            params: {
+                                page: _this.currentPage,
+                                size: 10
+                            }
+                        }).then(function(res) {
+                            // //console.log(this)
+                            if (res.data.code == 200) {
+                                //console.log(res.data.data.length)
+                                if (res.data.data.length == 1) {
+                                    axios.post('/lable/deleteLable', null, {
+                                        params: {
+                                            lableIds: deleteId
+                                        }
+                                    }).then(function(res) {
+                                        //console.log(res)
+                                        if (res.data.code == 200) {
+                                            _this.$message({
+                                                type: 'success',
+                                                message: '删除成功!'
+                                            });
+                                            _this.getHeadLabel()
+                                                // //console.log(_this.currentPage)
+                                            _this.changeCurrent(_this.currentPage - 1)
+                                        }
+                                    })
+                                } else {
+                                    axios.post('/lable/deleteLable', null, {
+                                        params: {
+                                            lableIds: deleteId
+                                        }
+                                    }).then(function(res) {
+                                        //console.log(res)
+                                        if (res.data.code == 200) {
+                                            _this.$message({
+                                                type: 'success',
+                                                message: '删除成功!'
+                                            });
+                                            _this.getHeadLabel()
+                                                // //console.log(_this.currentPage)
+                                            _this.changeCurrent(_this.currentPage)
+                                        }
+                                    })
+                                }
+                            } else if (res.data.code == 505) {
+                                _this.loserToken()
+                            }
+                        })
+                    }).catch(() => {
+                        this.$message({
+                            type: 'info',
+                            message: '已取消删除'
+                        });
+                    });
+
+                },
+                //删除用户选择的标签
+                deleteChoice(selection, row) {
+                    // //console.log(selection, row)
+                    let selectArr = []
+                    for (let item of selection) {
+                        // //console.log(item.id)
+                        selectArr.push(item.id)
+                    }
+                    //console.log(selectArr.length)
+                    if (selectArr.length == 10) {
+                        this.checkedLable = true
+                    } else {
+                        this.checkedLable = false
+                    }
+                    // //console.log(selectArr)
+                    this.selectId = selectArr.join(',')
+
+                    //console.log(this.selectId)
+                },
+                //删除全部标签
+                deleteAll(selection) {
+                    //console.log(selection)
+                    let selectAll = []
+                    for (let item of selection) {
+                        // //console.log(item)
+                        selectAll.push(item.id)
+                    }
+                    this.selectId = selectAll.join(',')
+                        //console.log(this.selectId)
+                },
+                //点击删除用户选择的标签
+                deleteChoiceLable() {
+                    // //console.log(111)
+                    const _this = this
+                        //console.log(this.selectId)
+                    if (_this.checkedLable) {
+                        this.$confirm('此操作将永久删除当前所有标签, 是否继续?', '提示', {
+                            confirmButtonText: '确定',
+                            cancelButtonText: '取消',
+                            type: 'warning'
+                        }).then(() => {
+                            //console.log(_this.tableData)
+                            for (let item of _this.tableData) {
+                                _this.idArr.push(item.id)
+                            }
+                            //console.log(_this.idArr.join(','))
+                            let idString = _this.idArr.join(',')
+                            axios.post('/lable/deleteLable', null, {
+                                params: {
+                                    lableIds: idString
+                                }
+                            }).then(function(res) {
+                                //console.log(res)
+                                if (res.data.code == 200) {
+                                    _this.$message({
+                                        type: 'success',
+                                        message: '删除成功!'
+                                    });
+                                } else if (res.data.code == 505) {
+                                    _this.loserToken()
+                                }
+                                _this.changeCurrent(1)
+                                _this.getAllLable()
+                            })
+                        }).catch(() => {
+                            this.$message({
+                                type: 'info',
+                                message: '已取消删除'
+                            });
+                        });
+                    } else {
+                        if (this.selectId == '') {
+                            // //console.log('未选择标签')
+                            this.$alert('请选择您要删除的标签', '', {
+                                confirmButtonText: '确定',
+                                // callback: action => {
+                                //     this.$message({
+                                //         type: 'info',
+                                //         message: `action: ${ action }`
+                                //     });
+                                // }
+                            });
+                        } else {
+                            this.$confirm('此操作将永久删除您选中的标签, 是否继续?', '提示', {
+                                confirmButtonText: '确定',
+                                cancelButtonText: '取消',
+                                type: 'warning'
+                            }).then(() => {
+                                axios.post('/lable/deleteLable', null, {
+                                    params: {
+                                        lableIds: _this.selectId
+                                    }
+                                }).then(function(res) {
+                                    //console.log(res)
+                                    if (res.data.code == 200) {
+                                        _this.$message({
+                                            type: 'success',
+                                            message: '删除成功!'
+                                        });
+                                        axios.get('lable/findAllLable').then(function(res) {
+                                            if (res.data.code == 200) {
+                                                _this.allLableMember = res.data.data.length
+                                            }
+                                        })
+                                        _this.getHeadLabel()
+                                    } else if (res.data.code == 505) {
+                                        _this.loserToken()
+                                    }
+                                })
+                            }).catch(() => {
+                                this.$message({
+                                    type: 'info',
+                                    message: '已取消删除'
+                                });
+                            });
+                        }
+                    }
+                },
+                //请求特长标签
+                async getHeadLabel() {
+                    // //console.log(this)
+                    const _this = this
+                    await axios.get('lable/findAllLable', {
+                            params: _this.params
+                        }).then(function(res) {
+                            // //console.log(this)
+                            if (res.data.code == 200) {
+                                //console.log(res.data.data)
+                                _this.tableData = res.data.data
+                                    // //console.log(this)
+                            } else if (res.data.code == 505) {
+                                _this.loserToken()
+                            }
+                        })
+                        // await //console.log(_this.residueHeadLabel)
+                },
+                //请求所有标签返回条数
+                getAllLable() {
+                    const _this = this
+                    _this.allLables = [{
+                        lableName: '全部'
+                    }]
+                    axios.get('lable/findAllLable').then(function(res) {
+                        //console.log(res)
+                        // //console.log(res.data.data.length)
+                        if (res.data.code == 200) {
+                            _this.allLableMember = res.data.data.length
+                            _this.allLables = _this.allLables.concat(res.data.data)
+                        } else if (res.data.code == 505) {
+                            _this.loserToken()
+                        }
+                        // //console.log(_this.allLables)
+                    })
+                },
+                //获取单页简历信息
+                getAllResume() {
+                    const _this = this
+                    axios.post('resume/resumePage', null, {
+                        params: _this.resumePageSize
+                    }).then(function(res) {
+                        //console.log(res)
+                        if (res.data.code == 200) {
+                            //从新获单页数据取进行渲染
+                            _this.allResume = res.data.data
+                                //获取全部信息条数供分页数据使用
+                            _this.allResumeMember = parseInt(res.data.msg)
+                                //将男女改变
+                            _this.allResume.map(function(item) {
+                                    item.gender == 0 ? item.gender = '女' : item.gender = '男'
+                                })
+                                // _this.allResume.map(function(item) {
+                                //         // item.lableid.split(',')
+                                //         console.id()
+                                //     })
+                                // //console.log(_this.allResume)
+                        } else if (res.data.code == 505) {
+                            _this.loserToken()
+                        }
+                    })
+                },
+                //后台token超时
+                loserToken() {
+                    alert('登录超时，请重新进行登录')
+                    axios.post('/user/signOut').then(function(res) {
+                        // //console.log(res)
+                        if (res.data.code == 200) {
+                            // //console.log(window.localStorage.getItem('token'))
+                            if (window.localStorage.getItem('token')) {
+                                window.localStorage.removeItem('token')
+                                window.location.href = 'login.html'
+                            }
+                        }
+                    })
+                },
+                //获取上一页标签数据
+                getPrevLable(page) {
+                    //console.log(page)
+                    const _this = this
+                    _this.checkedLable = false
+                    _this.currentPage = page
+                    _this.params.page = page
+                    _this.getHeadLabel()
+                    _this.getAllLable()
+                },
+                //获取下一页标签数据
+                getNextLable(page) {
+                    //console.log(page)
+                    const _this = this
+                    _this.checkedLable = false
+                    _this.currentPage = page
+                    _this.params.page = page
+                    _this.getHeadLabel()
+                    _this.getAllLable()
+                },
+                //当前页数改变的时候
+                changeCurrent(page) {
+                    // //console.log(111)
+                    //console.log(page)
+                    const _this = this
+                    _this.checkedLable = false
+                    _this.currentPage = page
+                    _this.params.page = page
+                    _this.getAllLable()
+                    _this.getHeadLabel()
+                },
+                //获取上一页简历数据
+                getPrevResume(page) {
+                    // //console.log(page)
+                    const _this = this
+                    if (_this.status.a == true && _this.status.b == false && _this.status.c == false) {
+                        _this.checked = false
+                        _this.currentPages = page
+                        _this.resumePageSize.page = page
+                        _this.getAllResume()
+                    } else if (_this.status.a == false && _this.status.b == true && _this.status.c == false) {
+                        _this.searchInput.page = page
+                        _this.currentPages1 = page
+                        axios.post('resume/resumePage', null, {
+                            params: _this.searchInput
+                        }).then(function(res) {
+                            //console.log(res)
+                            if (res.data.code == 200) {
+                                _this.showDeleDown = true
+                                _this.showPage = true
+                                _this.allResume = res.data.data
+                                _this.allResume.map(function(item) {
+                                    item.gender == 0 ? item.gender = '女' : item.gender = '男'
+                                })
+                                _this.allResumeMember = parseInt(res.data.msg)
+                            } else if (res.data.code == 505) {
+                                _this.loserToken()
+                            }
+                        })
+                    } else if (_this.status.a == false && _this.status.b == false && _this.status.c == true) {
+                        _this.searchCan.page = page
+                        _this.currentPages2 = page
+                        axios.post('resume/resumePage', null, {
+                            params: _this.searchCan
+                        }).then(function(res) {
+                            // //console.log(res)
+                            if (res.data.code == 200) {
+                                _this.showDeleDown = true
+                                _this.showPage = true
+                                _this.allResume = res.data.data
+                                _this.allResume.map(function(item) {
+                                    item.gender == 0 ? item.gender = '女' : item.gender = '男'
+                                })
+                                _this.allResumeMember = parseInt(res.data.msg)
+                            } else if (res.data.code == 505) {
+                                _this.loserToken()
+                            }
+                        })
+                    }
+                },
+                //获取下一页标签数据
+                getNextResume(page) {
+                    // //console.log(page)
+                    const _this = this
+                    if (_this.status.a == true && _this.status.b == false && _this.status.c == false) {
+                        _this.checked = false
+                        _this.currentPages = page
+                        _this.resumePageSize.page = page
+                        _this.getAllResume()
+                    } else if (_this.status.a == false && _this.status.b == true && _this.status.c == false) {
+                        _this.searchInput.page = page
+                        _this.currentPages1 = page
+                        axios.post('resume/resumePage', null, {
+                            params: _this.searchInput
+                        }).then(function(res) {
+                            //console.log(res)
+                            if (res.data.code == 200) {
+                                _this.showDeleDown = true
+                                _this.showPage = true
+                                _this.allResume = res.data.data
+                                _this.allResume.map(function(item) {
+                                    item.gender == 0 ? item.gender = '女' : item.gender = '男'
+                                })
+                                _this.allResumeMember = parseInt(res.data.msg)
+                            } else if (res.data.code == 505) {
+                                _this.loserToken()
+                            }
+                        })
+                    } else if (_this.status.a == false && _this.status.b == false && _this.status.c == true) {
+                        _this.searchCan.page = page
+                        _this.currentPages2 = page
+                        axios.post('resume/resumePage', null, {
+                            params: _this.searchCan
+                        }).then(function(res) {
+                            // //console.log(res)
+                            if (res.data.code == 200) {
+                                _this.showDeleDown = true
+                                _this.showPage = true
+                                _this.allResume = res.data.data
+                                _this.allResume.map(function(item) {
+                                    item.gender == 0 ? item.gender = '女' : item.gender = '男'
+                                })
+                                _this.allResumeMember = parseInt(res.data.msg)
+                            } else if (res.data.code == 505) {
+                                _this.loserToken()
+                            }
+                        })
+                    }
+                },
+                //当前页数改变的时候
+                changeCurrentResume(page) {
+                    // //console.log(page)
+                    const _this = this
+                    if (_this.status.a == true && _this.status.b == false && _this.status.c == false) {
+                        _this.checked = false
+                        _this.currentPages = page
+                        _this.resumePageSize.page = page
+                        _this.getAllResume()
+                    } else if (_this.status.a == false && _this.status.b == true && _this.status.c == false) {
+                        _this.searchInput.page = page
+                        _this.currentPages1 = page
+                        axios.post('resume/resumePage', null, {
+                            params: _this.searchInput
+                        }).then(function(res) {
+                            //console.log(res)
+                            if (res.data.code == 200) {
+                                _this.showDeleDown = true
+                                _this.showPage = true
+                                _this.allResume = res.data.data
+                                _this.allResume.map(function(item) {
+                                    item.gender == 0 ? item.gender = '女' : item.gender = '男'
+                                })
+                                _this.allResumeMember = parseInt(res.data.msg)
+                            } else if (res.data.code == 505) {
+                                _this.loserToken()
+                            }
+                        })
+                    } else if (_this.status.a == false && _this.status.b == false && _this.status.c == true) {
+                        _this.searchCan.page = page
+                        _this.currentPages2 = page
+                        axios.post('resume/resumePage', null, {
+                            params: _this.searchCan
+                        }).then(function(res) {
+                            // //console.log(res)
+                            if (res.data.code == 200) {
+                                _this.showDeleDown = true
+                                _this.showPage = true
+                                _this.allResume = res.data.data
+                                _this.allResume.map(function(item) {
+                                    item.gender == 0 ? item.gender = '女' : item.gender = '男'
+                                })
+                                _this.allResumeMember = parseInt(res.data.msg)
+                            } else if (res.data.code == 505) {
+                                _this.loserToken()
+                            }
+                        })
+                    }
+                },
+                //更改个人状态
+                changeInit() {
+                    window.location.reload();
+                },
+                changeInitFalse() {
+                    this.checkedLable = false
+                    this.initPage = false
+                    this.changeCurrent(1)
+                    this.getAllLable()
+                },
+                //获取上一个页面传来的参数
+                getRequest() {
+                    let url = window.location.search;
+                    let theRequest = new Object();
+                    if (url.indexOf("?") != -1) {
+                        let str = url.substr(1);
+                        strs = str.split("&");
+                        for (let i = 0; i < strs.length; i++) {
+                            theRequest[strs[i].split("=")[0]] = decodeURI(strs[i].split("=")[1]);
+                        }
+                    }
+                    return theRequest;
+                },
+                //当输入框筛选不足8位补0
+                fillEight() {
+                    // //console.log(121212)
+                    // @blur="fillEight"
+                    if (!isNaN(this.searchInput)) {
+                        let v = this.searchInput;
+                        while (v.length < 8) {
+                            v = '0' + v;
+                        }
+                        this.searchInput = v;
+                    }
+                }
+
+            },
+            created() {
+                if (window.localStorage.getItem('token')) {
+                    // axios.interceptors.response.use(function(response) {
+                    //     // 对响应数据做点什么
+                    //     return response;
+                    // }, function(error) {
+                    //     // 对响应错误做点什么
+                    //     //console.log(error)
+                    //     if (error.response) {
+                    //         switch (error.response.status) {
+                    //             case 401:
+                    //                 alert('登录超时，请重新进行登录')
+                    //                 window.location.href = 'login.html'
+                    //         }
+                    //     }
+                    //     return Promise.reject(error);
+                    // });
+                    // //console.log(window.localStorage.getItem('token'))
+                    axios.defaults.headers.common['token'] = window.localStorage.getItem('token')
+                    this.getAllResume()
+                    this.getHeadLabel()
+                    this.getAllLable()
+                    this.usernametop = this.getRequest().username
+                } else {
+                    alert('你还未登陆，请进行登陆')
+                    window.location.href = 'login.html'
+                }
+            },
+            filters: {
+                changeTime(item) {
+                    // //console.log(item.substr(0, 10))
+                    return item.substr(0, 10)
+                },
+                totalLablePage(item) {
+                    // //console.log(item)
+                    return Math.ceil(item / 10)
+                }
+            }
+        })
+    </script>
+</body>
+
+</html>
