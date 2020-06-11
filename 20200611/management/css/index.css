@@ -58,11 +58,11 @@ body {
     text-align: center;
 }
 
-.el-table th>.cell {
+.el-table th > .cell {
     text-align: center;
 }
 
-.el-table__row>td {
+.el-table__row > td {
     border: none;
 }
 
@@ -73,7 +73,6 @@ body {
 .el-table .cell {
     text-align: center;
 }
-
 
 /* .show-resume {
             position: absolute;
