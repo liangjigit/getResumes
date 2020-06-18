@@ -180,7 +180,7 @@ new Vue({
 
         //退出登录
         logOut() {
-            signOut().then(function(res) {
+            signOut().then(function (res) {
                 if (res.code == 200) {
                     if (window.localStorage.getItem('token')) {
                         window.localStorage.removeItem('token')
@@ -205,7 +205,7 @@ new Vue({
         //请求单页面的标签,初始页数1，初始数量10
         getHeadLabel() {
             const _this = this
-            getLables(_this.params).then(function(res) {
+            getLables(_this.params).then(function (res) {
                 // console.log(res)
                 if (res.code == 200) {
                     _this.tableData = res.data
@@ -219,12 +219,12 @@ new Vue({
             _this.allLables = [{
                 lableName: '全部'
             }]
-            getLables().then(function(res) {
+            getLables().then(function (res) {
                 // console.log(res)
                 if (res.code == 200) {
                     //获取标签总数
                     _this.allLableMember = res.data.length
-                        //将所有标签拼接在全部最后，用于简历页面展示
+                    //将所有标签拼接在全部最后，用于简历页面展示
                     _this.allLables = _this.allLables.concat(res.data)
                 }
             })
@@ -241,19 +241,19 @@ new Vue({
             }) => {
                 saveLable({
                     lableName: value
-                }).then(function(res) {
+                }).then(function (res) {
                     // console.log(res)
                     if (res.code == 200) {
                         _this.$message({
                             type: 'success',
                             message: res.data
                         })
-                        getLables().then(function(res) {
+                        getLables().then(function (res) {
                             console.log(res)
                             if (res.code == 200) {
                                 _this.allLableMember = res.data.length
                                 let lastPage = Math.ceil(_this.allLableMember / 10)
-                                    // console.log(lastPage)
+                                // console.log(lastPage)
                                 _this.changeCurrent(lastPage)
                             }
                         })
@@ -316,14 +316,14 @@ new Vue({
                 getLables({
                     page: _this.currentPage,
                     size: 10
-                }).then(function(res) {
+                }).then(function (res) {
                     // console.log(res)
                     if (res.code == 200) {
                         //console.log(res.data.data.length)
                         if (res.data.length == 1) {
                             deleteLable({
                                 lableIds: deleteId
-                            }).then(function(res) {
+                            }).then(function (res) {
                                 // console.log(res)
                                 if (res.code == 200) {
                                     _this.$message({
@@ -336,7 +336,7 @@ new Vue({
                         } else {
                             deleteLable({
                                 lableIds: deleteId
-                            }).then(function(res) {
+                            }).then(function (res) {
                                 // console.log(res)
                                 if (res.code == 200) {
                                     _this.$message({
@@ -371,7 +371,7 @@ new Vue({
                 this.checkedLable = false
             }
             this.selectId = selectArr.join(',')
-                // console.log(this.selectId)
+            // console.log(this.selectId)
         },
 
         //标签管理页全选
@@ -388,7 +388,7 @@ new Vue({
         deleteChoiceLable() {
             const _this = this
             console.log(this.selectId)
-                //当前页面全选删除
+            //当前页面全选删除
             if (_this.checkedLable) {
                 this.$confirm('此操作将永久删除当前所有标签, 是否继续?', '提示', {
                     confirmButtonText: '确定',
@@ -398,7 +398,7 @@ new Vue({
                     // console.log(this.selectId)
                     deleteLable({
                         lableIds: this.selectId
-                    }).then(function(res) {
+                    }).then(function (res) {
                         //console.log(res)
                         if (res.code == 200) {
                             _this.$message({
@@ -428,14 +428,14 @@ new Vue({
                     }).then(() => {
                         deleteLable({
                             lableIds: _this.selectId
-                        }).then(function(res) {
+                        }).then(function (res) {
                             // console.log(res)
                             if (res.code == 200) {
                                 _this.$message({
                                     type: 'success',
                                     message: '删除成功!'
                                 })
-                                getLables().then(function(res) {
+                                getLables().then(function (res) {
                                     if (res.code == 200) {
                                         _this.allLableMember = res.data.length
                                     }
@@ -464,16 +464,17 @@ new Vue({
         //简历管理页面，获取单页简历信息，初始页页数1数量10
         getAllResume() {
             const _this = this
-            getAllResumes(_this.resumePageSize).then(function(res) {
-                // console.log(res)
+            getAllResumes(_this.resumePageSize).then(function (res) {
+                console.log(res)
                 if (res.code == 200) {
                     //从新获单页数据取进行渲染
                     _this.allResume = res.data
-                        //获取全部信息条数供分页数据使用
+                    //获取全部信息条数供分页数据使用
                     _this.allResumeMember = parseInt(res.msg)
-                        //将男女改变
-                    _this.allResume.map(function(item) {
+                    //将男女改变
+                    _this.allResume.map(function (item) {
                         item.gender == 0 ? item.gender = '女' : item.gender = '男'
+                        item.createDate = item.createDate.substr(5, 5) + '  ' + item.createDate.substr(11, 5)
                     })
                 }
             })
@@ -492,29 +493,29 @@ new Vue({
         //简历管理 搜索手机号，姓名，工号 false true false
         async searchPnc() {
             const _this = this
-                // await _this.resumeInit()
-                //改变为搜索状态
+            // await _this.resumeInit()
+            //改变为搜索状态
             _this.checked = false
             _this.status.a = false
             _this.status.b = true
             _this.status.c = false
             _this.currentPage1 = 1
-                //初始化，从第1页开始请求模糊查询
+            //初始化，从第1页开始请求模糊查询
             await _this.changeCurrentResume(1)
         },
 
         //简历管理页面点击筛选
         async filterInfo() {
             const _this = this
-                // 初始化简历信息
-                // await _this.resumeInit()
+            // 初始化简历信息
+            // await _this.resumeInit()
             _this.checked = false
             _this.status.a = false
             _this.status.b = false
             _this.status.c = true
             _this.searchInput.phone = ''
             _this.currentPage1 = 1
-                //初始化，从第1页开始请求筛选查询
+            //初始化，从第1页开始请求筛选查询
             await _this.changeCurrentResume(1)
         },
 
@@ -534,7 +535,7 @@ new Vue({
             } else if (_this.status.a == false && _this.status.b == true && _this.status.c == false) {
                 _this.searchInput.page = page
                 _this.currentPages1 = page
-                getAllResumes(_this.searchInput).then(function(res) {
+                getAllResumes(_this.searchInput).then(function (res) {
                     //console.log(res)
                     if (res.code == 200) {
                         if (res.data.length == 0) {
@@ -545,7 +546,7 @@ new Vue({
                             _this.showDeleDown = true
                             _this.showPage = true
                             _this.allResume = res.data
-                            _this.allResume.map(function(item) {
+                            _this.allResume.map(function (item) {
                                 item.gender == 0 ? item.gender = '女' : item.gender = '男'
                             })
                             _this.allResumeMember = parseInt(res.msg)
@@ -555,7 +556,7 @@ new Vue({
             } else if (_this.status.a == false && _this.status.b == false && _this.status.c == true) {
                 _this.searchCan.page = page
                 _this.currentPages2 = page
-                getAllResumes(_this.searchCan).then(function(res) {
+                getAllResumes(_this.searchCan).then(function (res) {
                     // console.log(res)
                     if (res.code == 200) {
                         if (res.data.length == 0) {
@@ -566,7 +567,7 @@ new Vue({
                             _this.showDeleDown = true
                             _this.showPage = true
                             _this.allResume = res.data
-                            _this.allResume.map(function(item) {
+                            _this.allResume.map(function (item) {
                                 item.gender == 0 ? item.gender = '女' : item.gender = '男'
                             })
                             _this.allResumeMember = parseInt(res.msg)
@@ -587,7 +588,7 @@ new Vue({
             } else if (_this.status.a == false && _this.status.b == true && _this.status.c == false) {
                 _this.searchInput.page = page
                 _this.currentPages1 = page
-                getAllResumes(_this.searchInput).then(function(res) {
+                getAllResumes(_this.searchInput).then(function (res) {
                     //console.log(res)
                     if (res.code == 200) {
                         if (res.data.length == 0) {
@@ -598,7 +599,7 @@ new Vue({
                             _this.showDeleDown = true
                             _this.showPage = true
                             _this.allResume = res.data
-                            _this.allResume.map(function(item) {
+                            _this.allResume.map(function (item) {
                                 item.gender == 0 ? item.gender = '女' : item.gender = '男'
                             })
                             _this.allResumeMember = parseInt(res.msg)
@@ -608,7 +609,7 @@ new Vue({
             } else if (_this.status.a == false && _this.status.b == false && _this.status.c == true) {
                 _this.searchCan.page = page
                 _this.currentPages2 = page
-                getAllResumes(_this.searchCan).then(function(res) {
+                getAllResumes(_this.searchCan).then(function (res) {
                     // console.log(res)
                     if (res.code == 200) {
                         if (res.data.length == 0) {
@@ -619,7 +620,7 @@ new Vue({
                             _this.showDeleDown = true
                             _this.showPage = true
                             _this.allResume = res.data
-                            _this.allResume.map(function(item) {
+                            _this.allResume.map(function (item) {
                                 item.gender == 0 ? item.gender = '女' : item.gender = '男'
                             })
                             _this.allResumeMember = parseInt(res.msg)
@@ -640,7 +641,7 @@ new Vue({
             } else if (_this.status.a == false && _this.status.b == true && _this.status.c == false) {
                 _this.searchInput.page = page
                 _this.currentPages1 = page
-                getAllResumes(_this.searchInput).then(function(res) {
+                getAllResumes(_this.searchInput).then(function (res) {
                     //console.log(res)
                     if (res.code == 200) {
                         if (res.data.length == 0) {
@@ -651,7 +652,7 @@ new Vue({
                             _this.showDeleDown = true
                             _this.showPage = true
                             _this.allResume = res.data
-                            _this.allResume.map(function(item) {
+                            _this.allResume.map(function (item) {
                                 item.gender == 0 ? item.gender = '女' : item.gender = '男'
                             })
                             _this.allResumeMember = parseInt(res.msg)
@@ -661,7 +662,7 @@ new Vue({
             } else if (_this.status.a == false && _this.status.b == false && _this.status.c == true) {
                 _this.searchCan.page = page
                 _this.currentPages2 = page
-                getAllResumes(_this.searchCan).then(function(res) {
+                getAllResumes(_this.searchCan).then(function (res) {
                     // console.log(res)
                     if (res.code == 200) {
                         if (res.data.length == 0) {
@@ -672,7 +673,7 @@ new Vue({
                             _this.showDeleDown = true
                             _this.showPage = true
                             _this.allResume = res.data
-                            _this.allResume.map(function(item) {
+                            _this.allResume.map(function (item) {
                                 item.gender == 0 ? item.gender = '女' : item.gender = '男'
                             })
                             _this.allResumeMember = parseInt(res.msg)
@@ -722,33 +723,39 @@ new Vue({
                 selectArr.push(item.id)
             }
             this.resumeSelectId = selectArr
-                // console.log(this.resumeSelectId)
+            // console.log(this.resumeSelectId)
         },
 
         //简历管理点击全选删除，用户选择的简历
         deleteChoiceResume() {
             const _this = this
-                //console.log(this.resumeSelectId)
+            //console.log(this.resumeSelectId)
             if (_this.checked) {
                 this.$confirm('此操作将永久删除当前所有简历, 是否继续?', '提示', {
                     confirmButtonText: '确定',
                     cancelButtonText: '取消',
                     type: 'warning'
                 }).then(() => {
-                    for (let item of _this.allResume) {
-                        //console.log(item.id)
-                        deleteResumeById(item.id).then(function(res) {
+                    for (let i in _this.resumeSelectId) {
+                        // console.log(_this.resumeSelectId.length)
+                        deleteResumeById({
+                            resumeId: _this.resumeSelectId[i]
+                        }).then(function (res) {
                             // console.log(res)
-                            // if (res.code == 200) {
-                            //     _this.$message({
-                            //         type: 'success',
-                            //         message: '删除成功!'
-                            //     });
-                            // }
+                            if (res.code == 200) {
+                                if (i == _this.resumeSelectId.length - 1) {
+                                    // console.log('到最后了')
+                                    _this.$message({
+                                        type: 'success',
+                                        message: '删除成功!'
+                                    });
+                                    // _this.currentPage1 = 1
+                                    // _this.changeCurrentResume(1)
+                                    window.location.reload();
+                                }
+                            }
                         })
                     }
-                    _this.currentPage1 = 1
-                    _this.changeCurrentResume(1)
                 }).catch(() => {
                     this.$message({
                         type: 'info',
@@ -770,7 +777,7 @@ new Vue({
                             // console.log(_this.resumeSelectId.length)
                             deleteResumeById({
                                 resumeId: _this.resumeSelectId[i]
-                            }).then(function(res) {
+                            }).then(function (res) {
                                 // console.log(res)
                                 if (res.code == 200) {
                                     if (i == _this.resumeSelectId.length - 1) {
@@ -805,14 +812,14 @@ new Vue({
             console.log(table[index].id)
             let deleteId = table[index].id
             const _this = this
-            this.$confirm('此操作将永久个人简历, 是否继续?', '提示', {
+            this.$confirm('此操作将永久删除个人简历, 是否继续?', '提示', {
                 confirmButtonText: '确定',
                 cancelButtonText: '取消',
                 type: 'warning'
             }).then(() => {
                 deleteResumeById({
                     resumeId: deleteId
-                }).then(function(res) {
+                }).then(function (res) {
                     // console.log(res)
                     if (res.code == 200) {
                         _this.$message({
@@ -846,7 +853,7 @@ new Vue({
             } else {
                 showRemarks({
                     resumeId: arr.id
-                }).then(function(res) {
+                }).then(function (res) {
                     // console.log(res)
                     if (res.code == 200) {
                         _this.remarksArr = res.data
@@ -878,7 +885,7 @@ new Vue({
             saveRemarks({
                 resumeId: _this.postRemarksId,
                 content: _this.remarksText
-            }).then(function(res) {
+            }).then(function (res) {
                 // console.log(res)
                 if (res.code == 200) {
                     _this.$message({
@@ -914,7 +921,7 @@ new Vue({
             if (data == undefined) {
                 const date = new Date();
                 let nowTime = date.getFullYear() + '/' + (date.getMonth() + 1) + '/' + date.getDate()
-                    // console.log(nowTime)
+                // console.log(nowTime)
                 this.searchCan.end = nowTime
             } else {
                 this.searchCan.end = data
@@ -925,7 +932,7 @@ new Vue({
         getEducation(e, i) {
             // console.log(e, i)
             let lis = document.querySelector('#edu').children
-                // console.log(lis)
+            // console.log(lis)
             if (i == 0) {
                 for (let j = 0; j < lis.length; j++) {
                     if (j == 0) {
@@ -935,22 +942,22 @@ new Vue({
                     }
                 }
                 this.clickEindex = '0'
-                    //清空保存学历的数组
+                //清空保存学历的数组
                 this.educationArr = []
-                    // console.log(this.educationArr)
+                // console.log(this.educationArr)
             } else {
                 //先把全部变成黑色
                 lis[0].style.color = 'black'
-                    //将初始控制颜色的clickEindex停止使用
+                //将初始控制颜色的clickEindex停止使用
                 this.clickEindex = '-1'
                 let click_item = this.education[i]
-                    //判断为0可以直接变色，如果不为0则需要判断变黑色
+                //判断为0可以直接变色，如果不为0则需要判断变黑色
                 if (this.educationArr.length == 0) {
                     //变掉当前颜色
                     e.srcElement.style = 'color:#37c2b9;list-style:none;margin-right:30px'
-                        //将点击的名称保存到数组
+                    //将点击的名称保存到数组
                     this.educationArr.push(click_item)
-                        // console.log(this.educationArr)
+                    // console.log(this.educationArr)
                 } else {
                     //循环当前已经选中的学历
                     for (let i in this.educationArr) {
@@ -966,18 +973,18 @@ new Vue({
                         } else {
                             // 如果不相等说明未添加
                             e.srcElement.style = 'color:#37c2b9;list-style:none;margin-right:30px'
-                                //解决for循环带来的数据重复问题
-                            this.educationArr = this.educationArr.filter(function(item) {
+                            //解决for循环带来的数据重复问题
+                            this.educationArr = this.educationArr.filter(function (item) {
                                 return item != click_item
                             })
                             this.educationArr.push(click_item)
-                                // console.log(this.educationArr)
+                            // console.log(this.educationArr)
                         }
                     }
                 }
             }
             this.searchCan.post = this.educationArr.join(',')
-                // console.log(this.searchCan.post)
+            // console.log(this.searchCan.post)
         },
 
         //获取查询的性别
@@ -1018,7 +1025,7 @@ new Vue({
                             }
                         } else {
                             e.srcElement.style = 'color:#37c2b9;list-style:none;margin-right:30px'
-                            this.labelArr = this.labelArr.filter(function(item) {
+                            this.labelArr = this.labelArr.filter(function (item) {
                                 return item != click_item
                             })
                             this.labelArr.push(click_item)
@@ -1027,7 +1034,7 @@ new Vue({
                 }
             }
             this.searchCan.lable = this.labelArr.join(',')
-                // console.log(this.searchCan.lable)
+            // console.log(this.searchCan.lable)
         },
 
 
@@ -1044,36 +1051,36 @@ new Vue({
             const _this = this
             await resumeDownload({
                 resumeId: _this.deleteResumeId
-            }).then(function(res) {
+            }).then(function (res) {
                 // console.log(res)
                 // console.log(JSON.parse(res.data.data))
                 if (res.code == 200) {
                     _this.soleData = JSON.parse(res.data.data)[0]
                     if (_this.soleData.lableid) {
                         let lableLength = _this.soleData.lableid.split(',').length
-                            //console.log(_this.soleData.lableid.split(','))
-                            //console.log(_this.soleData.lableid.split(',').splice(0, lableLength - 1))
+                        //console.log(_this.soleData.lableid.split(','))
+                        //console.log(_this.soleData.lableid.split(',').splice(0, lableLength - 1))
                         _this.downloadLableId = _this.soleData.lableid.split(',').splice(0, lableLength - 1)
                     }
                     _this.soleData.gender == 0 ? _this.soleData.gender = '女' : _this.soleData.gender = '男'
-                        //console.log(_this.soleData)
+                    //console.log(_this.soleData)
                 }
             })
         },
         //获取当前简历的canvas
         getCanvas() {
             const _this = this
-                //console.log(_this.soleData)
-                // let test = $(".test").get(0);
-                //用原生方法解决
+            //console.log(_this.soleData)
+            // let test = $(".test").get(0);
+            //用原生方法解决
             let test = document.getElementById('test')
-                // console.log(test)
+            // console.log(test)
             html2canvas(test, {
                 allowTaint: true,
                 logging: false,
                 width: 595,
                 height: 842
-            }).then(function(canvas) {
+            }).then(function (canvas) {
                 _this.downLoad(_this.saveAsPNG(canvas));
             })
         },
@@ -1095,24 +1102,31 @@ new Vue({
 
         //简历管理页面，批量下载简历
         downloadMoreResume() {
-            this.$loading({
-                lock: true,
-                text: '努力下载打包中，请耐心等待',
-                spinner: 'el-icon-loading',
-                background: 'rgba(0, 0, 0, 0.7)'
-            })
             const _this = this
+            // console.log(_this.resumeSelectId.length)
+            if (_this.resumeSelectId.length == 0) {
+                _this.$alert('请选择您要下载的简历', '', {
+                    confirmButtonText: '确定'
+                })
+            } else {
+                _this.$loading({
+                    lock: true,
+                    text: '努力下载打包中，请耐心等待',
+                    spinner: 'el-icon-loading',
+                    background: 'rgba(0, 0, 0, 0.7)'
+                })
                 //将选择的用户id拼接成为字符串
-            _this.sendFive = _this.resumeSelectId
-            _this.sendFiveString = _this.sendFive.join(',')
-            _this.getFiveBase()
+                _this.sendFive = _this.resumeSelectId
+                _this.sendFiveString = _this.sendFive.join(',')
+                _this.getFiveBase()
+            }
         },
         //获取到个人的数据
         getFiveBase() {
             const _this = this
             resumeDownload({
                 resumeId: _this.sendFiveString
-            }).then(function(res) {
+            }).then(function (res) {
                 // 准备打印出来的简历数据
                 // console.log(JSON.parse(res.data.data))
                 if (res.code == 200) {
@@ -1129,10 +1143,10 @@ new Vue({
         nanDownload() {
             const _this = this
             _this.soleData = {}
-                //_this.moreDataIndex初始为0，从第一个开始取值
+            //_this.moreDataIndex初始为0，从第一个开始取值
             _this.soleData = _this.moreData[_this.moreDataIndex]
-                //console.log(_this.soleData)
-                //对个人数据中标签进行转化
+            //console.log(_this.soleData)
+            //对个人数据中标签进行转化
             if (_this.soleData.lableid) {
                 let lableLength = _this.soleData.lableid.split(',').length
                 _this.downloadLableId = _this.soleData.lableid.split(',').splice(0, lableLength - 1)
@@ -1147,37 +1161,37 @@ new Vue({
                 let minutes = date.getMinutes()
                 let second = date.getSeconds()
                 _this.resumeTime = year + "-" + month + "-" + day + " " + hours + ":" + minutes
-                    //console.log(_this.resumeTime)
+                //console.log(_this.resumeTime)
             }
             setTimeout(() => {
                 // let test = $(".test").get(0);
                 let test = document.getElementById('test')
-                    //console.log(test)
+                //console.log(test)
                 html2canvas(test, {
                     allowTaint: true,
                     logging: false,
                     width: 595,
                     height: 842
-                }).then(function(canvas) {
+                }).then(function (canvas) {
                     //转化参数
                     let params = new URLSearchParams()
                     params.append('imgStr', _this.saveAsPNG(canvas))
-                    saveResumeImage(params).then(function(data) {
+                    saveResumeImage(params).then(function (data) {
                         // console.log(data)
                         //保证简历的唯一性
                         _this.getAllResumePicArr.push(data.data[0] + 'AIMERPERSONNEL' + _this.resumeTime + _this.soleData.name)
                         _this.getAllResumePic = _this.getAllResumePicArr.join(',')
-                            //索引+1
+                        //索引+1
                         _this.moreDataIndex++
-                            //当索引与数据相同时代表到最后了
-                            if (_this.moreDataIndex == _this.moreDataLength) {
-                                window.open('http://np.aimergroup.com:8081/api/resume/uploadResume?resumeStr=' + _this.getAllResumePic)
-                                    // this.loading.close();
-                                setTimeout(function() {
-                                    window.location.reload()
-                                }, 2000)
-                            }
-                            //延迟之后进行下一轮循环
+                        //当索引与数据相同时代表到最后了
+                        if (_this.moreDataIndex == _this.moreDataLength) {
+                            window.open('http://np.aimergroup.com:8081/api/resume/uploadResume?resumeStr=' + _this.getAllResumePic)
+                            // this.loading.close();
+                            setTimeout(function () {
+                                window.location.reload()
+                            }, 2000)
+                        }
+                        //延迟之后进行下一轮循环
                         setTimeout(() => {
                             _this.nanDownload()
                         }, 500)
@@ -1185,14 +1199,19 @@ new Vue({
                 })
             }, 3000)
         }
-
-
     },
     created() {
         this.getAllResume()
         this.getHeadLabel()
         this.getAllLable()
         this.usernametop = this.getRequest().username
+        // if (this.allResume.length == 0) {
+        //     this.showDeleDown = false
+        //     this.showPage = false
+        // } else {
+        //     this.showDeleDown = true
+        //     this.showPage = true
+        // }
     },
     filters: {
         changeTime(item) {
