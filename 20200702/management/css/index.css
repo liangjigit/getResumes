@@ -1,0 +1,168 @@
+html,
+body {
+    padding: 0;
+    margin: 0;
+    height: 100%;
+    overflow: hidden;
+}
+
+#app {
+    height: 100%;
+}
+
+.el-header {
+    background-color: #ffffff;
+    color: #656565;
+    text-align: right;
+    line-height: 60px;
+}
+
+.el-aside {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    background-color: rgba(63, 63, 63, 1);
+    color: #ffffff;
+    text-align: center;
+    line-height: 50px;
+}
+
+.el-main {
+    padding: 0;
+    background-color: #ffffff;
+    text-align: center;
+    line-height: 160px;
+}
+
+.el-container {
+    margin-bottom: 40px;
+    height: 100%;
+}
+
+.el-container .el-aside {
+    /* line-height: 800px; */
+    overflow: hidden;
+}
+
+.el-table .warning-row {
+    background: oldlace;
+}
+
+.el-table .success-row {
+    background: #f0f9eb;
+}
+
+.el-table thead {
+    line-height: 3;
+    text-align: center;
+}
+
+.el-table th > .cell {
+    text-align: center;
+}
+
+.el-table__row > td {
+    border: none;
+}
+
+.el-table::before {
+    height: 0px;
+}
+
+.el-table .cell {
+    text-align: center;
+}
+
+/* .show-resume {
+            position: absolute;
+            z-index: 999;
+            width: 100%;
+            background-color: black;
+        } */
+
+.aside-css {
+    color: blue;
+}
+
+.change {
+    color: #37c2b9;
+    list-style: none;
+    margin-right: 30px;
+}
+
+.changeOne {
+    color: #37c2b9;
+    list-style: none;
+    margin-right: 30px;
+}
+
+.has-gutter tr th:nth-child(1) .cell {
+    opacity: 0;
+}
+
+.el-table__body-wrapper {
+    font-size: 12px;
+}
+
+.remarks {
+    position: absolute;
+    left: 50%;
+    top: 50%;
+    transform: translate(-50%, -50%);
+    width: 400px;
+    height: 300px;
+    z-index: 9999;
+    background-color: white;
+    border: 1px solid #bee7ff;
+    overflow: auto;
+}
+
+.remark-box {
+    display: flex;
+    position: relative;
+    top: 30px;
+    text-align: center;
+    width: 100%;
+    padding-bottom: 10px;
+    border-bottom: 1px solid #bee7ff;
+}
+
+.remarks-add {
+    border-bottom: 1px solid #bee7ff;
+    line-height: 40px;
+}
+
+.add-remarks {
+    margin: 10px 30px;
+    border: 1px solid #bee7ff;
+    height: 180px;
+}
+
+.add-remarks textarea {
+    width: 338px;
+    height: 180px;
+}
+
+.change-back {
+    background-color: #37c2b9 !important;
+}
+
+.el-input__inner::-webkit-input-placeholder {
+    /*Chrome/Safari*/
+    color: black;
+}
+
+.el-input__inner::-moz-placeholder {
+    /*Firefox*/
+    color: black;
+}
+
+.el-input__inner::-ms-input-placeholder {
+    /*IE*/
+    color: black;
+}
+
+[v-cloak] {
+    display: none;
+}

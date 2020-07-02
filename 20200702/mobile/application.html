@@ -1,0 +1,201 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="initial-scale=1.0, user-scalable=no, minimum-scale=1.0, maximum-scale=1.0" />
+    <title>内聘简历信息收集</title>
+    <link rel="stylesheet" href="https://unpkg.com/mint-ui@1/lib/style.css">
+    <link rel="stylesheet" href="css/application.css">
+</head>
+
+<body>
+    <div id="app">
+        <!-- <mt-button @click.native="test">按钮</mt-button> -->
+        <div class="all-info">
+            <p class="h3">内部竞聘岗位报名信息</p>
+            <p class="h4">我的基本信息</p>
+            <div class="my-photo">
+                <div id="photoBg" class="photo-bg">
+                    <!-- <p>点击上传</p> -->
+                    <div class="photo-img">
+                        <img src="img/head.png" alt="" style="width: 1.5rem;height: 1.5rem;">
+                    </div>
+                </div>
+                <p>
+                    <span>*</span>
+                    <span>我的照片</span>
+                </p>
+                <div class="file-images">
+                    <input id="file" accept="image/png, image/jpeg, image/gif, image/jpg" @change="changepic" type="file">
+                </div>
+                <div class="show-images">
+                    <img src="" id="show" alt="">
+                </div>
+            </div>
+            <!-- 个人信息 -->
+            <div class="basic-info">
+                <p>
+                    <span>*</span>
+                    <span>姓名:</span>
+                </p>
+                <input type="text" v-model="userInformation.name" maxlength="20">
+                <p class="sex-block">
+                    <span>*</span>
+                    <span>性别：</span>
+                    <mt-button size="small" plain :type="buttonTypeM" @click.native="isBoy">男</mt-button>
+                    <mt-button size="small" plain :type="buttonTypeW" @click.native="isGirl">女</mt-button>
+                </p>
+                <div class="body-info">
+                    <div class="basic-body-info">
+                        <span>*</span>
+                        <span>身高：</span>
+                        <input type="text" v-model="userInformation.height" maxlength="3" @input="value=value.replace(/[^\d]/g,'')">
+                        <span>cm</span>
+                        <span>*</span>
+                        <span>体重：</span>
+                        <input type="text" v-model="userInformation.weight" maxlength="3">
+                        <span>kg</span>
+                    </div>
+                    <div class="more-body-info" v-if="!isMoreBodyInfo">
+                        <span>胸围：</span>
+                        <input type="text" v-model="userInformation.chest" maxlength="3">
+                        <span>cm</span>
+                        <span>腰围：</span>
+                        <input type="text" v-model="userInformation.waist" maxlength="3">
+                        <span>cm</span>
+                        <br/>
+                        <span>臀围：</span>
+                        <input type="text" v-model="userInformation.hips" maxlength="3">
+                        <span>cm</span>
+                    </div>
+                    <div class="pull-down" @click="getMoreBodyInfo">
+                        <span>{{healthy}}</span>
+                        <img :src="healthyimg" alt="">
+                    </div>
+                </div>
+                <p class="edu">
+                    <span>*</span>
+                    <span>学历：</span>
+                </p>
+                <select v-model="userInformation.education">
+                    <option v-for="item in eduBackground">{{item}}</option>
+                </select>
+                <p class="phone">
+                    <span>*</span>
+                    <span>手机号码：</span>
+                </p>
+                <input type="text" v-model="userInformation.phone" @change="checkPhone" maxlength="12">
+                <p class="email">
+                    <span>*</span>
+                    <span>电子邮箱：</span>
+                </p>
+                <input type="email" v-model="userInformation.email" placeholder="&nbsp;&nbsp;用于发送测评信息" @change="checkEmail" maxlength="30">
+                <p class="code">
+                    <span>*</span>
+                    <span>工号：</span>
+                </p>
+                <input type="text" v-model="userInformation.code" @change="checkCode" maxlength="8">
+                <p class="dep">
+                    <span>*</span>
+                    <span>部门：</span>
+                </p>
+                <input type="text" v-model="userInformation.department" maxlength="20">
+                <p class="post">
+                    <span>*</span>
+                    <span>目前所在岗位：</span>
+                </p>
+                <input type="text" v-model="userInformation.post" maxlength="20">
+                <p class="once-job">
+                    <span>曾任职岗位</span>
+                    <span>（可填写多个）</span>
+                </p>
+                <input type="text" v-model="userInformation.formerPost" maxlength="50">
+            </div>
+            <!-- 竞聘信息 -->
+            <p class="h4">竞聘信息：</p>
+            <div class="an-information">
+                <p class="job-subsidies">
+                    <span style="color: red;">*</span>
+                    <span>岗位意向：</span>
+                    <span>(需填写与竞聘岗位名称相同)</span>
+                </p>
+                <input type="text" v-model="userInformation.intention" maxlength="20">
+                <!-- 技能介绍文字域 -->
+                <p class="skill-to-introduce">
+                    <span>*</span>
+                    <span>相关技能介绍</span>
+                    <span>(如取得相关资料证书和荣誉，请一并填入)</span>
+                </p>
+                <div style="position: relative;">
+                    <div>
+                        <textarea id="resume" v-model="userInformation.skill" maxlength="210" rows="6" @input="changeTextArea" @focus="clearTextareaSkill" @blur="getTextareaSkill"></textarea>
+                    </div>
+                    <div class="textarea1" @click="resumeFocus" style="position: absolute;top: 0;font-size: 0.3rem;color:#757575;left: 0.3rem;" v-show="isResume">
+                        <p>请输入您的工作简历，最多200个字</p>
+                        <p>例:1&nbsp;&nbsp;获得企业优秀员工称号</p>
+                        <p>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;2&nbsp;&nbsp;数量掌握Photoshop软件</p>
+                        <p>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;3&nbsp;&nbsp;...</p>
+                    </div>
+                </div>
+                <!-- 工作履历文字域 -->
+                <p class="track-record">
+                    <span>*</span>
+                    <span>工作履历</span>
+                </p>
+                <div style="position: relative;">
+                    <div>
+                        <textarea id="work" v-model="userInformation.experience" @input="changeTextAreaMore" maxlength="410" rows="10" @focus="clearTextareaWork" @blur="getTextareaWork"></textarea>
+                    </div>
+                    <div @click="workFocus" style="position: absolute;top: 0;font-size: 0.3rem;color:#757575;left: 0.3rem;" v-show="isWork">
+                        <p>请输入您的工作履历，最多400个字</p>
+                        <p>例:1&nbsp;&nbsp;在2017-2019任职于爱慕大数据中心</p>
+                        <p>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;2&nbsp;&nbsp;在2013-2017年任职于爱慕时尚工厂</p>
+                        <p>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;3&nbsp;&nbsp;...</p>
+                    </div>
+                </div>
+                <p>我的特长</p>
+                <p class="most-five">最多选择5个</p>
+                <div style="border-bottom: 1px dotted #757575;margin-bottom: 5px;padding-bottom: 5px;">
+                    <div class="head-label">
+                        <ul>
+                            <li v-for="(index,item) in showLableName" style="color:#37c2b9;border-color:#37c2b9" @click="closeLableName(index,item)">{{item}}</li>
+                        </ul>
+                    </div>
+                </div>
+                <div class="choice-label">
+                    <div class="head-label">
+                        <ul class="initclass" ref="initclass">
+                            <li v-for="item in initHeadLabel" @click="getUserLabel($event,item)">{{item.lableName}}</li>
+                        </ul>
+                    </div>
+                    <div class="head-label" v-if="!isAllLabel">
+                        <ul class="resclass">
+                            <li v-for="item in residueHeadLabel" @click="getUserLabel($event,item)">{{item.lableName}}</li>
+                        </ul>
+                    </div>
+                    <div class="pull-down-label" @click="getAllLabels">
+                        <span>{{helptext}}</span>
+                        <img :src="imgposition" alt="">
+                    </div>
+                </div>
+            </div>
+            <p class="h4">作品发送：</p>
+            <!-- 作品发送以及最终确认 -->
+            <div class="submit-result">
+                <p>请将作品以邮件附件发送至：</p>
+                <p>hr01@aimer.com.cn</p>
+                <p>附件大小建议20m内</p>
+                <mt-button size="large" type="primary" @click="submitInformation">提交</mt-button>
+            </div>
+        </div>
+    </div>
+    <script src="js/lib-flexible-2.0/index.js "></script>
+    <script src="https://unpkg.com/vue@1/dist/vue.js "></script>
+    <script src="https://unpkg.com/mint-ui@1/lib/index.js"></script>
+    <script src="https://unpkg.com/axios/dist/axios.min.js "></script>
+    <script src="js/application.js"></script>
+
+</body>
+
+</html>
