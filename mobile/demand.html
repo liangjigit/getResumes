@@ -1,0 +1,177 @@
+<!DOCTYPE html>
+<html>
+
+	<head>
+		<meta charset="UTF-8">
+		<meta name="viewport" content="initial-scale=1.0, user-scalable=no, minimum-scale=1.0, maximum-scale=1.0" />
+		<title>我有才华</title>
+		<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/vant@2.12/lib/index.css" />
+		<link rel="stylesheet" href="css/demand.css">
+	</head>
+
+	<body>
+		<div id="app">
+			<van-tabs v-model="active">
+				<van-tab title="我有才华" name="a">
+					<div class="basic-info">
+						<p>
+							<span>*</span>
+							<span>姓名:</span>
+						</p>
+						<input type="text" v-model="userInformation.name" maxlength="20">
+						<p class="phone">
+							<span>*</span>
+							<span>手机号码：</span>
+						</p>
+						<input type="text" v-model="userInformation.phone" @change="checkPhone" maxlength="12">
+						<!-- <select v-model="userInformation.education">
+							<option v-for="item in eduBackground">{{item}}</option>
+						</select> -->
+
+						<div class="an-information">
+							<p class="skill-to-introduce">
+								<span>*</span>
+								<span>具体介绍</span>
+								<!-- <span>(如取得相关资料证书和荣誉，请一并填入)</span> -->
+							</p>
+							<div style="position: relative;">
+								<div>
+									<textarea id="resume" v-model="userInformation.skill" maxlength="210" rows="6" @input="changeTextArea" @focus="clearTextareaSkill"
+									 @blur="getTextareaSkill"></textarea>
+								</div>
+								<!-- <div class="textarea1" @click="resumeFocus" style="position: absolute;top: 0;font-size: 0.3rem;color:#757575;left: 0.3rem;" v-show="isResume">
+						            <p>请输入您的工作简历，最多200个字</p>
+						            <p>例:1&nbsp;&nbsp;获得企业优秀员工称号</p>
+						            <p>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;2&nbsp;&nbsp;数量掌握Photoshop软件</p>
+						            <p>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;3&nbsp;&nbsp;...</p>
+						        </div> -->
+							</div>
+						</div>
+					</div>
+				</van-tab>
+				<van-tab title="我有需求" name="b">
+					<div class="basic-info">
+						<p>
+							<span>*</span>
+							<span>部门:</span>
+						</p>
+						<input type="text" v-model="userInformation.name" maxlength="20">
+						<p class="phone">
+							<span>*</span>
+							<span>联系人：</span>
+						</p>
+						<input type="text" v-model="userInformation.phone" @change="checkPhone" maxlength="12">
+						<p class="dep">
+							<span>*</span>
+							<span>手机号码：</span>
+						</p>
+						<input type="text" v-model="userInformation.department" maxlength="20">
+						<div class="an-information">
+							<p class="skill-to-introduce">
+								<span>*</span>
+								<span>需求详情</span>
+								<span>(内容、要求、时间)</span>
+							</p>
+							<div style="position: relative;">
+								<div>
+									<textarea id="resume" v-model="userInformation.skill" maxlength="210" rows="6" @input="changeTextArea" @focus="clearTextareaSkill"
+									 @blur="getTextareaSkill"></textarea>
+								</div>
+								<!-- <div class="textarea1" @click="resumeFocus" style="position: absolute;top: 0;font-size: 0.3rem;color:#757575;left: 0.3rem;" v-show="isResume">
+						            <p>请输入您的工作简历，最多200个字</p>
+						            <p>例:1&nbsp;&nbsp;获得企业优秀员工称号</p>
+						            <p>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;2&nbsp;&nbsp;数量掌握Photoshop软件</p>
+						            <p>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;3&nbsp;&nbsp;...</p>
+						        </div> -->
+							</div>
+						</div>
+					</div>
+				</van-tab>
+			</van-tabs>
+			<!-- <mt-button @click.native="test">按钮</mt-button>
+        <div class="all-info">
+            <p class="h3">内部竞聘岗位报名信息</p>
+            <p class="h4">我的基本信息</p>
+            <div class="my-photo">
+                <div id="photoBg" class="photo-bg">
+                    <!-- <p>点击上传</p> -->
+			<!-- <div class="photo-img">
+                        <img src="img/head.png" alt="" style="width: 1.5rem;height: 1.5rem;">
+                    </div>
+                </div>
+                <p>
+                    <span>*</span>
+                    <span>我的照片</span>
+                </p>
+                <div class="file-images">
+                    <input id="file" accept="image/png, image/jpeg, image/gif, image/jpg" @change="changepic" type="file">
+                </div>
+                <div class="show-images">
+                    <img src="" id="show" alt="">
+                </div>
+            </div>
+            <!-- 个人信息 -->
+
+			<!-- 竞聘信息 -->
+
+			<!-- 工作履历文字域
+			<!-- <p class="track-record">
+                    <span>*</span>
+                    <span>工作履历</span>
+                </p>
+                <div style="position: relative;">
+                    <div>
+                        <textarea id="work" v-model="userInformation.experience" @input="changeTextAreaMore" maxlength="410" rows="10" @focus="clearTextareaWork" @blur="getTextareaWork"></textarea>
+                    </div>
+                    <div @click="workFocus" style="position: absolute;top: 0;font-size: 0.3rem;color:#757575;left: 0.3rem;" v-show="isWork">
+                        <p>请输入您的工作履历，最多400个字</p>
+                        <p>例:1&nbsp;&nbsp;在2017-2019任职于爱慕大数据中心</p>
+                        <p>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;2&nbsp;&nbsp;在2013-2017年任职于爱慕时尚工厂</p>
+                        <p>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;3&nbsp;&nbsp;...</p>
+                    </div>
+                </div>
+                <p>我的特长</p>
+                <p class="most-five">最多选择5个</p>
+                <div style="border-bottom: 1px dotted #757575;margin-bottom: 5px;padding-bottom: 5px;">
+                    <div class="head-label">
+                        <ul>
+                            <li v-for="(index,item) in showLableName" style="color:#37c2b9;border-color:#37c2b9" @click="closeLableName(index,item)">{{item}}</li>
+                        </ul>
+                    </div>
+                </div>
+                <div class="choice-label">
+                    <div class="head-label">
+                        <ul class="initclass" ref="initclass">
+                            <li v-for="item in initHeadLabel" @click="getUserLabel($event,item)">{{item.lableName}}</li>
+                        </ul>
+                    </div>
+                    <div class="head-label" v-if="!isAllLabel">
+                        <ul class="resclass">
+                            <li v-for="item in residueHeadLabel" @click="getUserLabel($event,item)">{{item.lableName}}</li>
+                        </ul>
+                    </div>
+                    <div class="pull-down-label" @click="getAllLabels">
+                        <span>{{helptext}}</span>
+                        <img :src="imgposition" alt="">
+                    </div>
+                </div>
+            </div>
+            <p class="h4">作品发送：</p> -->
+			<!-- 作品发送以及最终确认 -->
+			<!-- <div class="submit-result">
+                <p>请将作品以邮件附件发送至：</p>
+                <p>hr01@aimer.com.cn</p>
+                <p>附件大小建议20m内</p>
+                <mt-button size="large" type="primary" @click="submitInformation">提交</mt-button>
+            </div> -->
+			<!-- </div> -->
+		</div>
+		<script src="js/lib-flexible-2.0/index.js "></script>
+		<script src="https://cdn.jsdelivr.net/npm/vue@2.6/dist/vue.min.js"></script>
+		<script src="https://cdn.jsdelivr.net/npm/vant@2.12/lib/vant.min.js"></script>
+		<script src="https://unpkg.com/axios/dist/axios.min.js "></script>
+		<script src="js/demand.js"></script>
+
+	</body>
+
+</html>

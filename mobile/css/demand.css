@@ -1,0 +1,340 @@
+/*CSS全局定义代码*/
+
+html,
+body {
+    overflow-x: hidden;
+}
+
+body {
+    margin: 0;
+    padding: 0;
+    font: 14px Arial, "Microsoft YaHei", "宋体";
+    line-height: 1;
+    color: #333;
+    background-color: #fff;
+}
+
+h1,
+h2,
+h3,
+h4,
+h5,
+h6,
+p,
+form,
+b,
+strong,
+input,
+table,
+tr,
+td,
+th {
+    margin: 0;
+    padding: 0;
+}
+
+ul,
+li,
+ol,
+dl,
+dt,
+dd {
+    margin: 0;
+    padding: 0;
+    list-style: none;
+}
+
+img {
+    border: 0;
+}
+
+a {
+    color: #333;
+    text-decoration: none;
+}
+
+a:hover {
+    color: #e00;
+    text-decoration: underline;
+}
+
+.c {
+    clear: both
+}
+
+input {
+    outline: none;
+    font-size: 0.42rem;
+}
+
+input:focus {
+    outline: none;
+}
+
+body {
+    min-width: 320px;
+    max-width: 750px;
+    width: 10rem;
+    margin: 0 auto;
+    line-height: 1.5;
+    font-family: Arial, Helvetica, sans-serif;
+    overflow-x: hidden;
+}
+
+@media screen and (min-width: 750px) {
+    html {
+        font-size: 75px!important;
+    }
+}
+
+#app {
+    font-size: 0.42rem;
+}
+
+p {
+    margin: 0.5rem 0 0 0;
+}
+
+.textarea1 p {
+    margin-top: 0.2rem;
+}
+
+#app .h3 {
+    padding-left: 0.6rem;
+    font-size: 0.5rem;
+    color: #181818;
+}
+
+#app .h4 {
+    padding-left: 0.6rem;
+    font-size: 0.48rem;
+    color: #1c1c1c;
+}
+
+.my-photo {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    position: relative;
+}
+
+.my-photo>p span:nth-child(1) {
+    color: red;
+}
+
+.photo-bg {
+    width: 3rem;
+    height: 3rem;
+    border: 1px solid #edecec;
+    border-radius: .3125rem;
+    /* background-color: rgba(215, 215, 215, 1); */
+}
+
+.photo-img {
+    display: flex;
+    justify-content: center;
+    margin-top: 0.75rem;
+}
+
+.photo-bg p {
+    display: flex;
+    justify-content: center;
+    line-height: 3rem;
+    margin: 0;
+}
+
+.basic-info {
+    padding: 0 0.6rem;
+}
+
+.basic-info>p span:nth-child(1) {
+    color: red;
+}
+
+.basic-info>p .mint-button {
+    margin: 0 0.3rem;
+}
+
+.basic-info input {
+    border: 0;
+    border-bottom: 1px solid #edecec;
+    width: 100%;
+    height: 0.8rem;
+}
+
+.body-info {
+    position: relative;
+    margin: 0.5rem auto;
+}
+
+.body-info input {
+    border: 0;
+    border-bottom: 1px solid #edecec;
+    width: 0.8rem;
+    height: 0.6rem;
+}
+
+.basic-body-info span:nth-child(1),
+span:nth-child(5) {
+    color: red;
+}
+
+.basic-info select {
+    width: 90%;
+    margin-left: 5%;
+    margin-top: 0.2rem;
+    height: 0.8rem;
+}
+
+.pull-down {
+    position: relative;
+    top: 0.3rem;
+    /* right: 0; */
+    left: 7rem;
+}
+
+.pull-down span:nth-child(1) {
+    color: blue;
+}
+
+.more-body-info {
+    margin-top: 0.1rem;
+    padding-left: 0.2rem;
+}
+
+.more-body-info span:nth-child(4) {
+    margin-left: 0.3rem;
+}
+
+.more-body-info input {
+    border: 0;
+    border-bottom: 1px solid #edecec;
+    width: 0.8rem;
+}
+
+.once-job span:nth-child(1) {
+    color: black!important;
+}
+
+.once-job span:nth-child(2) {
+    color: #757575;
+    font-size: 0.3rem;
+}
+
+.an-information input {
+    border: 0;
+    border-bottom: 1px solid #edecec;
+    width: 100%;
+    height: 0.8rem;
+}
+
+.an-information textarea {
+    width: 100%;
+}
+
+.skill-to-introduce span:nth-child(1) {
+    color: red;
+}
+
+.skill-to-introduce span:nth-child(3) {
+    color: #757575;
+    font-size: 0.3rem;
+}
+
+.job-subsidies span:nth-child(3) {
+    color: #757575;
+    font-size: 0.3rem;
+}
+
+.track-record span:nth-child(1) {
+    color: red;
+}
+
+.submit-result {
+    padding: 0.6rem 0.6rem;
+}
+
+textarea {
+    border: 1px solid #edecec;
+    font-size: 0.42rem;
+}
+
+textarea::-webkit-input-placeholder {
+    color: #757575;
+    font-size: 0.267rem;
+}
+
+.file-images {
+    position: absolute;
+    z-index: 999;
+    line-height: 0;
+    opacity: 0;
+}
+
+.file-images input {
+    width: 3rem;
+    height: 5rem;
+}
+
+.show-images {
+    position: absolute;
+    bottom: 0.7rem;
+    z-index: 99;
+}
+
+.show-images img {
+    /* width: 3.1rem; */
+    height: 3.1rem;
+}
+
+.sex-block {
+    margin: 0.5rem auto;
+}
+
+.most-five {
+    color: #999999;
+}
+
+.head-label ul {
+    display: flex;
+    flex-wrap: wrap;
+    padding: 0;
+}
+
+.head-label ul li {
+    list-style: none;
+    padding: 0.1rem;
+    border: 1px solid #757575;
+    color: #757575;
+    border-radius: 0.6rem;
+    margin: 0.2rem 0.2rem 0 0;
+    font-size: 0.267rem;
+}
+
+.choice-label {
+    position: relative;
+}
+
+.pull-down-label {
+    position: relative;
+    left: 7rem;
+    top: 0.3rem;
+    color: blue;
+}
+
+.edu,
+.phone,
+.email,
+.code,
+.dep,
+.post,
+.once-job,
+.skill-to-introduce,
+.mint-button {
+    margin: 0.8rem auto 0;
+}
+
+[v-cloak] {
+    display: none;
+}
