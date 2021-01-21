@@ -24,10 +24,22 @@
 							<span>手机号码：</span>
 						</p>
 						<input type="text" v-model="userInformation.phone" @change="checkPhone" maxlength="12">
-						<!-- <select v-model="userInformation.education">
-							<option v-for="item in eduBackground">{{item}}</option>
-						</select> -->
-
+						<p>类型</p>
+						<p class="most-five">最多选择5个</p>
+						<div style="border-bottom: 1px dotted #757575;margin-bottom: 5px;padding-bottom: 5px;">
+							<div class="head-label">
+								<ul>
+									<li v-for="(index,item) in showLableName" style="color:#37c2b9;border-color:#37c2b9" @click="closeLableName(index,item)">{{item}}</li>
+								</ul>
+							</div>
+						</div>
+						<div class="choice-label">
+							<div class="head-label">
+								<ul class="initclass" ref="initclass">
+									<li v-for="item in headLabel" @click="getUserLabel($event,item)">{{item}}</li>
+								</ul>
+							</div>
+						</div>
 						<div class="an-information">
 							<p class="skill-to-introduce">
 								<span>*</span>
@@ -47,6 +59,10 @@
 						        </div> -->
 							</div>
 						</div>
+					</div>
+					<div class="submit-result">
+						<!-- <mt-button size="large" type="primary" @click="submitInformation">提交</mt-button> -->
+						<van-button type="info">信息按钮</van-button>
 					</div>
 				</van-tab>
 				<van-tab title="我有需求" name="b">
@@ -85,6 +101,10 @@
 						        </div> -->
 							</div>
 						</div>
+					</div>
+					<div class="submit-result">
+						<!-- <mt-button size="large" type="primary" @click="submitInformation">提交</mt-button> -->
+						<van-button type="info">信息按钮</van-button>
 					</div>
 				</van-tab>
 			</van-tabs>
@@ -130,48 +150,18 @@
                         <p>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;3&nbsp;&nbsp;...</p>
                     </div>
                 </div>
-                <p>我的特长</p>
-                <p class="most-five">最多选择5个</p>
-                <div style="border-bottom: 1px dotted #757575;margin-bottom: 5px;padding-bottom: 5px;">
-                    <div class="head-label">
-                        <ul>
-                            <li v-for="(index,item) in showLableName" style="color:#37c2b9;border-color:#37c2b9" @click="closeLableName(index,item)">{{item}}</li>
-                        </ul>
-                    </div>
-                </div>
-                <div class="choice-label">
-                    <div class="head-label">
-                        <ul class="initclass" ref="initclass">
-                            <li v-for="item in initHeadLabel" @click="getUserLabel($event,item)">{{item.lableName}}</li>
-                        </ul>
-                    </div>
-                    <div class="head-label" v-if="!isAllLabel">
-                        <ul class="resclass">
-                            <li v-for="item in residueHeadLabel" @click="getUserLabel($event,item)">{{item.lableName}}</li>
-                        </ul>
-                    </div>
-                    <div class="pull-down-label" @click="getAllLabels">
-                        <span>{{helptext}}</span>
-                        <img :src="imgposition" alt="">
-                    </div>
-                </div>
+                
             </div>
             <p class="h4">作品发送：</p> -->
 			<!-- 作品发送以及最终确认 -->
-			<!-- <div class="submit-result">
-                <p>请将作品以邮件附件发送至：</p>
-                <p>hr01@aimer.com.cn</p>
-                <p>附件大小建议20m内</p>
-                <mt-button size="large" type="primary" @click="submitInformation">提交</mt-button>
-            </div> -->
+
 			<!-- </div> -->
 		</div>
+		<script src="https://unpkg.com/axios/dist/axios.min.js "></script>
 		<script src="js/lib-flexible-2.0/index.js "></script>
 		<script src="https://cdn.jsdelivr.net/npm/vue@2.6/dist/vue.min.js"></script>
 		<script src="https://cdn.jsdelivr.net/npm/vant@2.12/lib/vant.min.js"></script>
-		<script src="https://unpkg.com/axios/dist/axios.min.js "></script>
 		<script src="js/demand.js"></script>
-
 	</body>
 
 </html>

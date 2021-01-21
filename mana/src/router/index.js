@@ -35,7 +35,14 @@ const routes = [{
 		meta: {
 			requiresAuth: true,
 			title: '首页'
-		}
+		},
+		children:[
+			{
+				path:'label',
+				name:'labelMana',
+				component:()=>import('@/views/labelMana/labelMana')
+			}
+		]
 	},
 ]
 

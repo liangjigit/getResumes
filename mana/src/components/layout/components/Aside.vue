@@ -11,6 +11,24 @@
 				</el-submenu>
 			</el-menu>
 		</el-aside> -->
+		<el-aside width="80px" height="100%">
+		    <!-- <div :class="{'aside-css':initPage}" style="cursor: pointer;margin-top: -380px;" @click="changeInit">
+		        简历管理</div>
+		    <div :class="{'aside-css':!initPage}" style="cursor: pointer;" @click="changeInitFalse">标签管理</div> -->
+				<el-menu
+				      default-active="1"
+				      class="el-menu-vertical-demo">
+				      <el-menu-item index="1">
+				        <span slot="title">简历管理</span>
+				      </el-menu-item>
+				      <el-menu-item index="2">
+				        <span slot="title">标签管理</span>
+				      </el-menu-item>
+				      <el-menu-item index="3">
+				        <span slot="title">人才管理</span>
+				      </el-menu-item>
+				    </el-menu>
+		</el-aside>
 	</div>
 </template>
 
@@ -20,9 +38,9 @@
 	} from 'vuex'
 	export default {
 		name: 'Aside',
-		async created() {
-			const userPermissions = await this.getUserPermissions()
-			this.detailPermissions(userPermissions)
+		created() {
+			// const userPermissions = await this.getUserPermissions()
+			// this.detailPermissions(userPermissions)
 		},
 		data(){
 			return {
@@ -31,17 +49,23 @@
 			}
 		},
 		methods: {
-			...mapActions(['getUserPermissions']),
-			/**
-			 * 处理返回权限
-			 */
-			detailPermissions({roles}){
-				console.log(roles)
-				// this.firstMenu = objData.
-			}
 		}
 	}
 </script>
 
-<style>
+<style lang="scss" scoped>
+	#aside{
+		background-color: rgba(63, 63, 63, 1);
+		display: flex;
+		flex-direction: column;
+		justify-content: center;
+		.el-menu-item{
+			background-color: #3f3f3f;
+			color: #FFFFFF;
+		}
+		
+		.is-active {
+		    color: #409EFF;
+		}
+	}
 </style>
