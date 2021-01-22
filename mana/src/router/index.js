@@ -41,6 +41,11 @@ const routes = [{
 				path:'label',
 				name:'labelMana',
 				component:()=>import('@/views/labelMana/labelMana')
+			},
+			{
+				path:'resume',
+				name:'resume',
+				component:()=>import('@/views/resumeMana/resumeMana')
 			}
 		]
 	},

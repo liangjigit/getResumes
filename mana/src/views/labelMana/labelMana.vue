@@ -1,8 +1,8 @@
 <template>
 	<div id="label">
-		<labelH @showLastPage = "showLastPage"></labelH>
-		<labelM></labelM>
-		<labelF :lastPage = "lastPage"></labelF>
+		<labelH @showLastPage="showLastPage"></labelH>
+		<labelM ref="labelM" :pageSizes="pageSizes"></labelM>
+		<labelF :lastPage="lastPage" @pageChange="pageChange"></labelF>
 	</div>
 </template>
 
@@ -19,15 +19,32 @@
 		},
 		data(){
 			return{
-				lastPage:0
+				lastPage:{},
+				pageSizes:{
+					page:1,
+					size:10
+				}
 			}
 		},
 		methods:{
 			/**
 			 * 添加标签后跳至最后一页
 			 */
-			showLastPage(page){
-				this.lastPage = page
+			showLastPage(last){
+				// console.log(this.$refs.labelM)
+				let {lastPage} = last
+				if(this.pageSizes.page == lastPage){
+					this.$refs.labelM.showLabel({page:lastPage,size:10})
+				}else{
+					this.lastPage = last
+				}
+			},
+			/**
+			 * 改变当前数据页数
+			 */
+			pageChange(page){
+				// console.log(pageSizes)
+				this.pageSizes.page = page
 			}
 		}
 	}

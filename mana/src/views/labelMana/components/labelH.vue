@@ -24,6 +24,12 @@
 	} from '@/network/api/index.js'
 	export default {
 		name: 'labelH',
+		mounted() {
+			const _this = this
+			_this.$bus.$on('finishDele',()=>{
+				_this.toNewLabel()
+			})
+		},
 		methods: {
 			/**
 			 * 添加标签
@@ -69,7 +75,9 @@
 				getLabel({}, res => {
 					if (res.code == 200) {
 						let lastPage = Math.ceil(res.data.length / 10)
-						_this.$emit('showLastPage', lastPage)
+						let totalNumber = res.data.length
+						const last = {lastPage,totalNumber}
+						_this.$emit('showLastPage', last)
 					}
 				})
 			}

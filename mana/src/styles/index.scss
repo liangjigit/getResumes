@@ -97,10 +97,16 @@ body {
     margin-right: 30px;
 }
 
-.has-gutter tr th:nth-child(1) .cell {
-    opacity: 0;
+.has-gutter tr th:nth-child(1) .cell label .el-checkbox__inner{
+    display: none;
 }
-
+.has-gutter tr th:nth-child(1) .cell label.el-checkbox::after{
+    content: '';
+}
+.has-gutter tr th:nth-child(1) .cell ::after{
+    content: '选择';
+		color: #909399;
+}
 .el-table__body-wrapper {
     font-size: 12px;
 }

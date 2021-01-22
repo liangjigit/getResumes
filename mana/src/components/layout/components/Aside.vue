@@ -16,12 +16,13 @@
 		        简历管理</div>
 		    <div :class="{'aside-css':!initPage}" style="cursor: pointer;" @click="changeInitFalse">标签管理</div> -->
 				<el-menu
-				      default-active="1"
-				      class="el-menu-vertical-demo">
-				      <el-menu-item index="1">
+				      default-active="resume"
+				      class="el-menu-vertical-demo"
+							router>
+				      <el-menu-item index="resume">
 				        <span slot="title">简历管理</span>
 				      </el-menu-item>
-				      <el-menu-item index="2">
+				      <el-menu-item index="label">
 				        <span slot="title">标签管理</span>
 				      </el-menu-item>
 				      <el-menu-item index="3">
