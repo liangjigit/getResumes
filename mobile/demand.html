@@ -157,11 +157,35 @@
 
 			<!-- </div> -->
 		</div>
-		<script src="https://unpkg.com/axios/dist/axios.min.js "></script>
-		<script src="js/lib-flexible-2.0/index.js "></script>
-		<script src="https://cdn.jsdelivr.net/npm/vue@2.6/dist/vue.min.js"></script>
-		<script src="https://cdn.jsdelivr.net/npm/vant@2.12/lib/vant.min.js"></script>
-		<script src="js/demand.js"></script>
+		
 	</body>
+	<script type="text/javascript">
+		// console.log(document.getElementsByName("head"))
+		//按顺序加载JS
+		function loadScript(url, success) {
+		      let domScript = document.createElement('script');
+		      domScript.src = url;
+		      success = success || function () { console.log('未成功回调') };
+		      domScript.onload = domScript.onreadystatechange = function () {
+		        if (!this.readyState || 'loaded' === this.readyState || 'complete' === this.readyState) {
+		          success();
+		          this.onload = this.onreadystatechange = null;
+		          this.parentNode.removeChild(this);
+		        }
+		      }
+		      document.getElementsByTagName('head')[0].appendChild(domScript);
+		    }
+		loadScript("https://unpkg.com/axios/dist/axios.min.js", function() {
+			loadScript("https://cdn.jsdelivr.net/npm/vue@2.6/dist/vue.min.js", function() {
+				loadScript("https://cdn.jsdelivr.net/npm/vant@2.12/lib/vant.min.js", function() {
+					loadScript("js/lib-flexible-2.0/index.js", function() {
+						loadScript("js/demand.js", function() {
+							console.log('JS文件完成加载')
+						});
+					});
+				});
+			});
+		});
+	</script>
 
 </html>

@@ -19,3 +19,17 @@ export function getLabel(params, success, failure) {
 export function deleLabel(params, success, failure) {
 	return request.post('lable/deleteLable', params, success, failure)
 }
+
+/**
+ * 获取简历
+ */
+export function getResume(params, success, failure) {
+	return request.post('resume/resumePage', params, success, failure)
+}
+
+/**
+ * 删除简历
+ */
+export function deleResume(params, success, failure) {
+	return request.post('resume/deleteResumeById', params, success, failure)
+}
