@@ -77,7 +77,7 @@
 				//全选时为true
 				checked: false,
 				//选择的简历id
-				resumeSelectId:[],
+				resumeSelectId: [],
 				//请求页码
 				resumePageSize: {
 					page: 1,
@@ -85,6 +85,8 @@
 				},
 				selectIndex: true,
 				checked: false,
+				//全局批量删除的索引
+				deleI: 0
 			}
 		},
 		created() {
@@ -112,6 +114,7 @@
 				const _this = this
 				_this.$bus.$on('currentPage', (page) => {
 					_this.currentPage = page
+					_this.checked = false
 				})
 			},
 			/**
@@ -168,16 +171,16 @@
 				}).then(() => {
 					deleResume({
 						resumeId: deleteId
-					},res=>{
+					}, res => {
 						console.log(res)
 						if (res.code == 200) {
-								_this.$message({
-									type: 'success',
-									message: '删除成功!'
-								});
-								_this.$bus.$emit('deleFinish',_this.currentPage)
-							}
-					},err=>{
+							_this.$message({
+								type: 'success',
+								message: '删除成功!'
+							});
+							_this.$bus.$emit('deleFinish', _this.currentPage)
+						}
+					}, err => {
 						console.log(err)
 					})
 				}).catch(() => {
@@ -187,6 +190,79 @@
 					});
 				});
 			},
+			/**
+			 * 批量删除简历
+			 */
+			deleteChoiceResume() {
+				const _this = this
+				//console.log(this.resumeSelectId)
+				//全选情况下
+				if (_this.checked) {
+					_this.$confirm('此操作将永久删除当前所有简历, 是否继续?', '提示', {
+						confirmButtonText: '确定',
+						cancelButtonText: '取消',
+						type: 'warning'
+					}).then(() => {
+						_this.deleMoreResume(_this.deleI)
+					}).catch(() => {
+						_this.$message({
+							type: 'info',
+							message: '已取消删除'
+						});
+					});
+				} else {
+					if (_this.resumeSelectId.length == 0) {
+						_this.$alert('请选择您要删除的简历', '', {
+							confirmButtonText: '确定'
+						});
+					} else {
+						_this.$confirm('此操作将永久删除您选中的简历, 是否继续?', '提示', {
+							confirmButtonText: '确定',
+							cancelButtonText: '取消',
+							type: 'warning'
+						}).then(() => {
+							_this.deleMoreResume(_this.deleI)
+						}).catch(() => {
+							_this.$message({
+								type: 'info',
+								message: '已取消删除'
+							});
+						});
+					}
+				}
+			},
+			/**
+			 * 批量删除的方法
+			 */
+			deleMoreResume(deleI) {
+				const _this = this
+				// console.log(_this.resumeSelectId)
+				deleResume({
+					resumeId: _this.resumeSelectId[deleI]
+				}, res => {
+					console.log(res)
+					if (res.code == 200) {
+						if (deleI == _this.resumeSelectId.length - 1) {
+							// console.log('到最后了')
+							_this.$message({
+								type: 'success',
+								message: '删除成功!'
+							});
+							window.setTimeout(() => {
+								window.location.reload();
+							}, 1000)
+						} else {
+							_this.deleI++
+							_this.deleMoreResume(_this.deleI)
+						}
+					}
+				}, err => {
+					console.log(err)
+				})
+			},
+
+
+
 			/**
 			 * 下载个人简历
 			 */
@@ -258,7 +334,7 @@
 				oA.click();
 				oA.remove(); // 下载之后把创建的元素删除
 			},
-			
+
 			/**
 			 * 添加备注
 			 */
@@ -281,87 +357,8 @@
 					_this.needSeeRemarks = true
 				}
 			},
-			
-			//简历管理点击全选删除，用户选择的简历
-			deleteChoiceResume() {
-				const _this = this
-				//console.log(this.resumeSelectId)
-				if (_this.checked) {
-					this.$confirm('此操作将永久删除当前所有简历, 是否继续?', '提示', {
-						confirmButtonText: '确定',
-						cancelButtonText: '取消',
-						type: 'warning'
-					}).then(() => {
-						for (let i in _this.resumeSelectId) {
-							// console.log(_this.resumeSelectId.length)
-							deleteResumeById({
-								resumeId: _this.resumeSelectId[i]
-							}).then(function(res) {
-								// console.log(res)
-								if (res.code == 200) {
-									if (i == _this.resumeSelectId.length - 1) {
-										// console.log('到最后了')
-										_this.$message({
-											type: 'success',
-											message: '删除成功!'
-										});
-										// _this.currentPage1 = 1
-										// _this.changeCurrentResume(1)
-										window.location.reload();
-									}
-								}
-							})
-						}
-					}).catch(() => {
-						this.$message({
-							type: 'info',
-							message: '已取消删除'
-						});
-					});
-				} else {
-					if (this.resumeSelectId.length == 0) {
-						this.$alert('请选择您要删除的简历', '', {
-							confirmButtonText: '确定'
-						});
-					} else {
-						this.$confirm('此操作将永久删除您选中的简历, 是否继续?', '提示', {
-							confirmButtonText: '确定',
-							cancelButtonText: '取消',
-							type: 'warning'
-						}).then(() => {
-							for (let i in _this.resumeSelectId) {
-								// console.log(_this.resumeSelectId.length)
-								deleteResumeById({
-									resumeId: _this.resumeSelectId[i]
-								}).then(function(res) {
-									// console.log(res)
-									if (res.code == 200) {
-										if (i == _this.resumeSelectId.length - 1) {
-											// console.log('到最后了')
-											_this.$message({
-												type: 'success',
-												message: '删除成功!'
-											});
-											if (_this.status.a == true && _this.status.b == false && _this.status.c == false) {
-												_this.changeCurrentResume(_this.currentPages)
-											} else if (_this.status.a == false && _this.status.b == true && _this.status.c == false) {
-												_this.changeCurrentResume(_this.currentPages1)
-											} else if (_this.status.a == false && _this.status.b == false && _this.status.c == true) {
-												_this.changeCurrentResume(_this.currentPages2)
-											}
-										}
-									}
-								})
-							}
-						}).catch(() => {
-							this.$message({
-								type: 'info',
-								message: '已取消删除'
-							});
-						});
-					}
-				}
-			},
+
+
 			//简历管理页面，批量下载简历
 			downloadMoreResume() {
 				const _this = this
