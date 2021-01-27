@@ -64,7 +64,8 @@
 
 <script>
 	import {
-		deleResume
+		deleResume,
+		showRemark
 	} from '@/network/api/index.js'
 	export default {
 		name: 'resumeM',
@@ -86,7 +87,9 @@
 				selectIndex: true,
 				checked: false,
 				//全局批量删除的索引
-				deleI: 0
+				deleI: 0,
+				//保存备注的id
+				postRemarksId:''
 			}
 		},
 		created() {
@@ -260,6 +263,30 @@
 					console.log(err)
 				})
 			},
+			/**
+			 * 添加备注 a==0 未添加过备注 a!=0
+			 */
+			addRemarks(a, arr) {
+				const _this = this
+				// console.log(a,arr)
+				_this.postRemarksId = arr.id
+				if (a == 0) {
+					_this.$bus.$emit('delRemark',a)
+				} else {
+					showRemark({
+						resumeId: arr.id
+					},res=>{console.log(res)
+					_this.$bus.$emit('delRemark',res.data,arr.id)
+					},err=>{console.log(err)})
+					// .then(function(res) {
+					// 	// console.log(res)
+					// 	if (res.code == 200) {
+					// 		_this.remarksArr = res.data
+					// 	}
+					// })
+					// _this.needSeeRemarks = true
+				}
+			},
 
 
 
@@ -335,28 +362,7 @@
 				oA.remove(); // 下载之后把创建的元素删除
 			},
 
-			/**
-			 * 添加备注
-			 */
-			//添加备注 a==0 未添加过备注 a!=0
-			addRemarks(a, arr) {
-				const _this = this
-				_this.postRemarksId = arr.id
-				if (a == 0) {
-					_this.needAddRemarks = true
-					_this.remarksText = ''
-				} else {
-					showRemarks({
-						resumeId: arr.id
-					}).then(function(res) {
-						// console.log(res)
-						if (res.code == 200) {
-							_this.remarksArr = res.data
-						}
-					})
-					_this.needSeeRemarks = true
-				}
-			},
+			
 
 
 			//简历管理页面，批量下载简历

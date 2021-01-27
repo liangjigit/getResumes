@@ -78,8 +78,18 @@
 			_this.getSearchCan()
 			_this.getInputCan()
 			_this.deleResumeFinish()
+			_this.finishRemark()
 		},
 		methods: {
+			/**
+			 * 简历添加完成的监听
+			 */
+			finishRemark(){
+				const _this = this
+				_this.$bus.$on('remarkFinish',()=>{
+					_this.changeResumePage(_this.currentPage)
+				})
+			},
 			/**
 			 * 获取最新筛选参数
 			 */
@@ -138,6 +148,7 @@
 			changeResumePage(page) {
 				// console.log(page)
 				const _this = this
+				_this.currentPage = page
 				if (_this.status == 'filter') {
 					if (_this.searchCan.page == page) {
 						_this.getResume(_this.searchCan)

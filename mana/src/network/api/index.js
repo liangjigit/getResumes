@@ -33,3 +33,17 @@ export function getResume(params, success, failure) {
 export function deleResume(params, success, failure) {
 	return request.post('resume/deleteResumeById', params, success, failure)
 }
+
+/**
+ * 显示已经上传的备注
+ */
+export function showRemark(params, success, failure) {
+	return request.post('remarks/findId', params, success, failure)
+}
+
+/**
+ * 上传备注
+ */
+export function saveRemark(params, success, failure) {
+	return request.post('remarks/save', params, success, failure)
+}
