@@ -47,3 +47,17 @@ export function showRemark(params, success, failure) {
 export function saveRemark(params, success, failure) {
 	return request.post('remarks/save', params, success, failure)
 }
+
+/**
+ * 下载简历
+ */
+export function resumeDownload(params, success, failure) {
+	return request.post('resume/resumeDownload', params, success, failure)
+}
+
+/**
+ * 保存简历图片
+ */
+export function saveResumeImage(params, success, failure) {
+	return request.post('resume/saveResumeImage', params, success, failure)
+}

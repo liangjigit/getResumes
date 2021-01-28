@@ -24,7 +24,7 @@ const routes = [{
 		// which is lazy-loaded when the route is visited.
 		component: () => import( /* webpackChunkName: "about" */ '@/views/login/login.vue'),
 		meta: {
-			title: '登录页'
+			title: '登录'
 		}
 	},
 	{
@@ -32,20 +32,23 @@ const routes = [{
 		path: '/',
 		name: 'index',
 		component: () => import('@/components/layout/index.vue'),
+		redirect:'/label',
 		meta: {
 			requiresAuth: true,
 			title: '首页'
 		},
-		children:[
-			{
-				path:'label',
-				name:'labelMana',
-				component:()=>import('@/views/labelMana/labelMana')
+		children: [{
+				path: 'label',
+				name: 'labelMana',
+				component: () => import('@/views/labelMana/labelMana'),
+				meta: {
+					requiresAuth: true,
+				}
 			},
 			{
-				path:'resume',
-				name:'resume',
-				component:()=>import('@/views/resumeMana/resumeMana')
+				path: 'resume',
+				name: 'resume',
+				component: () => import('@/views/resumeMana/resumeMana')
 			}
 		]
 	},
@@ -61,25 +64,21 @@ router.beforeEach((to, from, next) => {
 	if (to.matched.some(record => record.meta.requiresAuth)) {
 		// this route requires auth, check if logged in
 		// if not, redirect to login page.
-		if (!window.localStorage.getItem('token')) {
-			MessageBox.confirm('请先进行登录', '提示', {
-				confirmButtonText: '确定',
-				cancelButtonText: '取消',
-				type: 'warning'
-			}).then(() => {
+		let employToken = window.localStorage.getItem('emlpoy-token')
+		let userRole = window.localStorage.getItem('user-role')
+		if (employToken && userRole) {
+
+		} else {
+			if (to.path == '/login') {
+				next();
+			} else {
 				next({
 					path: '/login',
 					query: {
 						redirect: to.fullPath
 					}
 				})
-			}).catch(() => {
-				Message.warning({
-					message: '已取消'
-				})
-			});
-		} else {
-			next()
+			}
 		}
 	} else {
 		next()

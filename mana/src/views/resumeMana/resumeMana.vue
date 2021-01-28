@@ -4,6 +4,7 @@
 		<resumeH></resumeH>
 		<resumeM></resumeM>
 		<resumeF></resumeF>
+		<resume></resume>
 	</div>
 </template>
 
@@ -12,13 +13,15 @@
 	import resumeM from './components/resumeM.vue'
 	import resumeF from './components/resumeF.vue'
 	import remark from './components/remark.vue'
+	import resume from './components/resume.vue'
 	export default{
 		name:'resumeMana',
 		components:{
 			resumeH,
 			resumeM,
 			resumeF,
-			remark
+			remark,
+			resume
 		},
 		data(){
 			return {

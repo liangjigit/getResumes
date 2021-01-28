@@ -53,8 +53,19 @@
 				})
 				// console.log(response)
 				if (response.code == 200) {
-					window.localStorage.setItem('token', response.data)
-					window.localStorage.setItem('username',response.msg)
+					let status = parseInt(response.msg.status)
+					let userRole = ''
+					switch(status){
+						case 1:
+						userRole = 'personnel'
+						break;
+						case 2:
+						userRole = 'CEO'
+						break;
+					}
+					window.localStorage.setItem('emlpoy-token', response.data)
+					window.localStorage.setItem('user-role', userRole)
+					window.localStorage.setItem('username',response.msg.name)
 					_this.$router.push('/')
 				} else {
 					_this.$message({

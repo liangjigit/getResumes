@@ -24,7 +24,7 @@
 					<div style="width: 70%;">备注内容</div>
 				</div>
 				<ul>
-					<li v-for="item in remarkArr" style="display: flex;">
+					<li v-for="item in remarkArr" style="display: flex; margin: 10px 0;">
 						<div style="width: 30%">{{item.createDate | changeTime}}</div>
 						<div style="width: 70%;">{{item.content}}</div>
 					</li>
@@ -97,6 +97,7 @@
 			 */
 			postRemark() {
 				const _this = this
+				// console.log(_this.remarkId)
 				saveRemark({
 					resumeId: _this.remarkId,
 					content: _this.remarkText
@@ -131,7 +132,7 @@
 		line-height: 1;
 
 		.top {
-			height: 50px;
+			height: 30px;
 			padding: 10px 10px;
 			display: flex;
 			justify-content: space-between;

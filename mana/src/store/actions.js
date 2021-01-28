@@ -18,10 +18,11 @@ export default {
 				password
 			}, res => {
 				// console.log(res)
-				resolve(res)
 				if(res.code == 200){
+					resolve(res)
 					commit('GETUSERINFO',{
-						username:res.msg,
+						username:res.msg.name,
+						status:res.msg.status,
 						token:res.data
 					})
 				}

@@ -65,7 +65,8 @@
 <script>
 	import {
 		deleResume,
-		showRemark
+		showRemark,
+		resumeDownload
 	} from '@/network/api/index.js'
 	export default {
 		name: 'resumeM',
@@ -89,7 +90,9 @@
 				//全局批量删除的索引
 				deleI: 0,
 				//保存备注的id
-				postRemarksId:''
+				postRemarksId: '',
+				//要展示的标签名
+				labelName: [],
 			}
 		},
 		created() {
@@ -143,6 +146,7 @@
 			 */
 			toggleSelection() {
 				if (this.checked) {
+					this.resumeSelectId = []
 					for (let item of this.allResume) {
 						this.resumeSelectId.push(item.id)
 					}
@@ -271,101 +275,57 @@
 				// console.log(a,arr)
 				_this.postRemarksId = arr.id
 				if (a == 0) {
-					_this.$bus.$emit('delRemark',a)
+					_this.$bus.$emit('delRemark', a, arr.id)
 				} else {
 					showRemark({
 						resumeId: arr.id
-					},res=>{console.log(res)
-					_this.$bus.$emit('delRemark',res.data,arr.id)
-					},err=>{console.log(err)})
-					// .then(function(res) {
-					// 	// console.log(res)
-					// 	if (res.code == 200) {
-					// 		_this.remarksArr = res.data
-					// 	}
-					// })
-					// _this.needSeeRemarks = true
+					}, res => {
+						console.log(res)
+						_this.$bus.$emit('delRemark', res.data, arr.id)
+					}, err => {
+						console.log(err)
+					})
 				}
 			},
-
-
-
 			/**
-			 * 下载个人简历
+			 * 下载个人简历,获取id
 			 */
-			//下载个人简历 获取个人简历的id
-			async downloadResume(i, arr) {
+			downloadResume(i, arr) {
 				//console.log(i, arr, arr[i].id)
-				const _this = this
-				_this.deleteResumeId = arr[i].id
-				await _this.getSoleResume()
-				await _this.getCanvas()
+				let downloadId = arr[i].id
+				this.getSoleResume(downloadId)
 			},
 			//获取指定单人的简历信息
-			async getSoleResume() {
+			getSoleResume(resumeId) {
 				const _this = this
-				await resumeDownload({
-					resumeId: _this.deleteResumeId
-				}).then(function(res) {
-					// console.log(res)
-					// console.log(JSON.parse(res.data.data))
+				resumeDownload({
+					resumeId
+				}, res => {
+					console.log(res)
 					if (res.code == 200) {
-						_this.soleData = JSON.parse(res.data.data)[0]
-						// console.log(_this.soleData)
-						if (_this.soleData.lableid) {
-							let lableLength = _this.soleData.lableid.split(',').length
-							//console.log(_this.soleData.lableid.split(','))
-							//console.log(_this.soleData.lableid.split(',').splice(0, lableLength - 1))
-							_this.downloadLableId = _this.soleData.lableid.split(',').splice(0, lableLength - 1)
+						const soleData = JSON.parse(res.data.data)[0]
+						if (soleData.lableid) {
+							_this.labelName = soleData.lableid.split(',')
+							_this.labelName.pop()
 						}
-						_this.soleData.gender == 0 ? _this.soleData.gender = '女' : _this.soleData.gender = '男'
+						soleData.gender == 0 ? soleData.gender = '女' : soleData.gender = '男'
 						// _this.soleData.experience = _this.soleData.experience.replace(/↵/g, "/n");
-						_this.soleData.skill =
+						soleData.skill =
 							"<pre style='white-space: pre-wrap;white-space: -moz-pre-wrap;white-space: -pre-wrap;white-space: -o-pre-wrap;word-wrap: break-word;font-size: 12px;font-family: Arial, Helvetica, sans-serif;'>" +
-							_this.soleData.skill + '</pre>'
-						_this.soleData.experience =
+							soleData.skill + '</pre>'
+						soleData.experience =
 							"<pre style='white-space: pre-wrap;white-space: -moz-pre-wrap;white-space: -pre-wrap;white-space: -o-pre-wrap;word-wrap: break-word;font-size: 12px;font-family: Arial, Helvetica, sans-serif;'>" +
-							_this.soleData.experience + '</pre>'
-						// console.log(_this.soleData)
+							soleData.experience + '</pre>'
+						// console.log(soleData)
+						_this.$bus.$emit('resumeShow', soleData, _this.labelName)
 					}
+				}, err => {
+					console.log(err)
 				})
 			},
-			//获取当前简历的canvas
-			getCanvas() {
-				const _this = this
-				//console.log(_this.soleData)
-				// let test = $(".test").get(0);
-				//用原生方法解决
-				let test = document.getElementById('test')
-				// console.log(test)
-				html2canvas(test, {
-					allowTaint: true,
-					logging: false,
-					width: 595,
-					height: 842
-				}).then(function(canvas) {
-					_this.downLoad(_this.saveAsPNG(canvas));
-				})
-			},
-			//转为png
-			saveAsPNG(canvas) {
-				return canvas.toDataURL("image/png");
-			},
-			//自动下载到本地
-			downLoad(url) {
-				const _this = this
-				var oA = document.createElement("a");
-				oA.download = _this.soleData.name; // 设置下载的文件名，默认是'下载'
-				oA.href = url;
-				document.body.appendChild(oA);
-				oA.click();
-				oA.remove(); // 下载之后把创建的元素删除
-			},
-
-			
-
-
-			//简历管理页面，批量下载简历
+			/**
+			 * 简历批量下载
+			 */
 			downloadMoreResume() {
 				const _this = this
 				// console.log(_this.resumeSelectId.length)
@@ -381,10 +341,35 @@
 						background: 'rgba(0, 0, 0, 0.7)'
 					})
 					//将选择的用户id拼接成为字符串
-					_this.sendFive = _this.resumeSelectId
-					_this.sendFiveString = _this.sendFive.join(',')
-					_this.getFiveBase()
+					let idString = _this.resumeSelectId.join(',')
+					_this.getMoreResume(idString)
 				}
+			},
+			/**
+			 * 获取批量下载所有人的数据
+			 */
+			getMoreResume(resumeId) {
+				const _this = this
+				resumeDownload({
+					resumeId
+				}, res => {
+					// console.log(res)
+					if (res.code == 200) {
+						const moreData = JSON.parse(res.data.data)
+						for (let item of moreData) {
+							item.gender == 0 ? item.gender = '女' : item.gender = '男',
+								item.skill =
+								"<pre style='white-space: pre-wrap;white-space: -moz-pre-wrap;white-space: -pre-wrap;white-space: -o-pre-wrap;word-wrap: break-word;font-size: 12px;font-family: Arial, Helvetica, sans-serif;'>" +
+								item.skill + '</pre>'
+							item.experience =
+								"<pre style='white-space: pre-wrap;white-space: -moz-pre-wrap;white-space: -pre-wrap;white-space: -o-pre-wrap;word-wrap: break-word;font-size: 12px;font-family: Arial, Helvetica, sans-serif;'>" +
+								item.experience + '</pre>'
+						}
+						_this.$bus.$emit('moreResumeDownload', moreData)
+					}
+				}, err => {
+					console.log(err)
+				})
 			},
 		},
 		filters: {
