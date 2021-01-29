@@ -25,9 +25,12 @@
 				      <el-menu-item index="label">
 				        <span slot="title">标签管理</span>
 				      </el-menu-item>
-				      <el-menu-item index="3">
-				        <span slot="title">人才管理</span>
+				      <el-menu-item index="talent">
+				        <span slot="title">我是人才</span>
 				      </el-menu-item>
+							<el-menu-item index="demand">
+							  <span slot="title">我有需求</span>
+							</el-menu-item>
 				    </el-menu>
 		</el-aside>
 	</div>

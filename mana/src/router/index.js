@@ -38,6 +38,7 @@ const routes = [{
 			title: '首页'
 		},
 		children: [{
+			//标签管理
 				path: 'label',
 				name: 'labelMana',
 				component: () => import('@/views/labelMana/labelMana'),
@@ -46,10 +47,23 @@ const routes = [{
 				}
 			},
 			{
+			//简历管理
 				path: 'resume',
 				name: 'resume',
 				component: () => import('@/views/resumeMana/resumeMana')
-			}
+			},
+			{
+			//我是人才
+				path: 'talent',
+				name: 'talent',
+				component: () => import('@/views/talent/talent')
+			},
+			{
+			//我有需求
+				path: 'demand',
+				name: 'demand',
+				component: () => import('@/views/demand/demand')
+			},
 		]
 	},
 ]
@@ -61,28 +75,29 @@ router.beforeEach((to, from, next) => {
 	if (to.path !== from.path) {
 		NProgress.start();
 	}
-	if (to.matched.some(record => record.meta.requiresAuth)) {
-		// this route requires auth, check if logged in
-		// if not, redirect to login page.
-		let employToken = window.localStorage.getItem('emlpoy-token')
-		let userRole = window.localStorage.getItem('user-role')
-		if (employToken && userRole) {
+	next()
+	// if (to.matched.some(record => record.meta.requiresAuth)) {
+	// 	// this route requires auth, check if logged in
+	// 	// if not, redirect to login page.
+	// 	let employToken = window.localStorage.getItem('emlpoy-token')
+	// 	let userRole = window.localStorage.getItem('user-role')
+	// 	if (employToken && userRole) {
 
-		} else {
-			if (to.path == '/login') {
-				next();
-			} else {
-				next({
-					path: '/login',
-					query: {
-						redirect: to.fullPath
-					}
-				})
-			}
-		}
-	} else {
-		next()
-	}
+	// 	} else {
+	// 		if (to.path == '/login') {
+	// 			next();
+	// 		} else {
+	// 			next({
+	// 				path: '/login',
+	// 				query: {
+	// 					redirect: to.fullPath
+	// 				}
+	// 			})
+	// 		}
+	// 	}
+	// } else {
+	// 	next()
+	// }
 })
 
 router.afterEach((to, from) => {
