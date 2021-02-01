@@ -1,0 +1,1 @@
+export const GLOBAL_URL = 'http://10.2.7.160:7300/'

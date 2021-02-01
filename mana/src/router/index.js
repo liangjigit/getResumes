@@ -22,7 +22,7 @@ const routes = [{
 		// route level code-splitting
 		// this generates a separate chunk (about.[hash].js) for this route
 		// which is lazy-loaded when the route is visited.
-		component: () => import( /* webpackChunkName: "about" */ '@/views/login/login.vue'),
+		component: () => import( /* webpackChunkName: "login" */ '@/views/login/login.vue'),
 		meta: {
 			title: '登录'
 		}
@@ -31,7 +31,7 @@ const routes = [{
 		//App.vue首页
 		path: '/',
 		name: 'index',
-		component: () => import('@/components/layout/index.vue'),
+		component: () => import( /* webpackChunkName: "index" */ '@/components/layout/index.vue'),
 		redirect:'/label',
 		meta: {
 			requiresAuth: true,
@@ -41,7 +41,7 @@ const routes = [{
 			//标签管理
 				path: 'label',
 				name: 'labelMana',
-				component: () => import('@/views/labelMana/labelMana'),
+				component: () => import( /* webpackChunkName: "label" */ '@/views/labelMana/labelMana'),
 				meta: {
 					requiresAuth: true,
 				}
@@ -50,19 +50,19 @@ const routes = [{
 			//简历管理
 				path: 'resume',
 				name: 'resume',
-				component: () => import('@/views/resumeMana/resumeMana')
+				component: () => import( /* webpackChunkName: "resume" */ '@/views/resumeMana/resumeMana')
 			},
 			{
 			//我是人才
 				path: 'talent',
 				name: 'talent',
-				component: () => import('@/views/talent/talent')
+				component: () => import( /* webpackChunkName: "talent" */ '@/views/talent/talent')
 			},
 			{
 			//我有需求
 				path: 'demand',
 				name: 'demand',
-				component: () => import('@/views/demand/demand')
+				component: () => import( /* webpackChunkName: "demand" */ '@/views/demand/demand')
 			},
 		]
 	},
