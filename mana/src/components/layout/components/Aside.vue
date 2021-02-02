@@ -19,24 +19,16 @@
 				      default-active="resume"
 				      class="el-menu-vertical-demo"
 							router>
-				      <el-menu-item index="resume">
-				        <span slot="title">简历管理</span>
+				      <el-menu-item v-for="item in activeAsync" :index="item.path">
+				        <span slot="title">{{item.meta.title}}</span>
 				      </el-menu-item>
-				      <el-menu-item index="label">
-				        <span slot="title">标签管理</span>
-				      </el-menu-item>
-				      <el-menu-item index="talent">
-				        <span slot="title">我是人才</span>
-				      </el-menu-item>
-							<el-menu-item index="demand">
-							  <span slot="title">我有需求</span>
-							</el-menu-item>
 				    </el-menu>
 		</el-aside>
 	</div>
 </template>
 
 <script>
+	import {asyncRouter} from '@/router/asyncRouter.js'
 	import {
 		mapActions
 	} from 'vuex'
@@ -45,11 +37,17 @@
 		created() {
 			// const userPermissions = await this.getUserPermissions()
 			// this.detailPermissions(userPermissions)
+			let userRole = window.localStorage.getItem('user-role')
+			this.activeAsync = asyncRouter.filter(item => {
+				return item.meta.role.includes(userRole)
+			})
+			// console.log(this.$router)
 		},
 		data(){
 			return {
+				activeAsync:[],
 				firstMenu:[],
-				secondMenu:[]
+				secondMenu:[],
 			}
 		},
 		methods: {

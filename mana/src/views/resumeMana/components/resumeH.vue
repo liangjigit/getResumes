@@ -305,9 +305,10 @@
 			 * 清空简历信息
 			 */
 			emptyInfo() {
-				const _this = this
-				Object.assign(_this.$data, _this.$options.data())
-				_this.getAllLabel()
+				window.location.reload()
+				// const _this = this
+				// Object.assign(_this.$data, _this.$options.data())
+				// _this.getAllLabel()
 			},
 			/**
 			 * 获取当前展示标签

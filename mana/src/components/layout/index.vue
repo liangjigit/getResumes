@@ -2,7 +2,6 @@
 	<div id="index">
 		<el-container style="height: 100vh; border: 1px solid #eee">
 			<Aside />
-
 			<el-container>
 				<Elheader />
 				<el-main>
@@ -35,6 +34,9 @@
 			return {
 				tableData: Array(20).fill(item)
 			}
+		},
+		created() {
+			console.log(this.$router)
 		},
 		methods: {
 			...mapActions(['getUserPermissions']),

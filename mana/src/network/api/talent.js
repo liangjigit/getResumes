@@ -6,10 +6,3 @@ import request from '../index.js'
 export function getAllImage(params, success, failure) {
 	return request.post('service/data/selectAll', params, success, failure)
 }
-
-/**
- * 获取所有人才数据
- */
-export function getAllTalent(params, success, failure) {
-	return request.post('service/personnel/findAll', params, success, failure)
-}

@@ -1,15 +1,14 @@
 <template>
 	<div id="talent">
-		<p>海报上传</p>
 		<div class="uploadImage">
 			<div class="addImage">
 				<el-upload class="upload-demo" :before-upload="beforeAvatarUpload" :action="actionUrl" :data="param" :on-change="changeImage"
-				 :file-list="fileList" list-type="picture" :on-success="successUpload" :on-remove="handleRemove">
+				 :file-list="fileList" list-type="picture" :on-success="successUpload">
 					<el-button size="small" type="primary">点击上传海报</el-button>
-					<div slot="tip" class="el-upload__tip">只能上传jpg文件，且文件大小不超过2MB</div>
+					<div slot="tip" class="el-upload__tip">只能上传jpg或png文件，且文件大小不超过2MB</div>
 				</el-upload>
 			</div>
-			<div class="preview">
+			<div class="preview" v-if="isShowPrev">
 				<div class="box">
 					<img :src="imageData.name" />
 					<div class="show">
@@ -50,7 +49,7 @@
 		getAllImage
 	} from '@/network/api/talent.js'
 	export default {
-		name: 'demand',
+		name: 'demandMana',
 		components: {
 			demandList
 		},
@@ -58,70 +57,51 @@
 			return {
 				actionUrl: '',
 				param: {
-					type: 'Personnel',
+					type: 'DEMAND',
 					url: ''
 				},
 				imageData: {},
-				fileList: []
+				fileList: [],
+				isShowPrev:false
 			};
 		},
 		created() {
 			this.actionUrl = GLOBAL_URL + 'service/data/save'
-			this.getCurrentImage()
 		},
 		methods: {
 			/**
-			 * 获取默认展示图片
-			 */
-			getCurrentImage() {
-				const _this = this
-				getAllImage({}, res => {
-					console.log(res)
-					if (res.code == 200) {
-						_this.imageData = res.data.filter((item, index, arr) => {
-							return item.type == 'Personnel'
-						})[0]
-						// console.log(_this.imageData)
-					}
-				}, err => {
-					console.log(err)
-				})
-			},
-			/**
-			 * 上传新的图片 获取blob
+			 * 图片状态更改 获取最新blob
 			 */
 			changeImage(file, fileList) {
 				// console.log(file)
 				this.param.url = file.url
 			},
 			/**
-			 * 提交前测试文件
+			 * 测试文件类型
 			 */
 			beforeAvatarUpload(file) {
 				// console.log(file)
+				const isPNG = file.type === 'image/png';
 				const isJPG = file.type === 'image/jpeg';
 				const isLt2M = file.size / 1024 / 1024 < 2;
-				if (!isJPG) {
-					this.$message.error('上传头像图片只能是 JPG 格式!');
+				if (!isJPG && !isPNG) {
+					this.$message.error('上传头像图片只能是 JPG 或 PNG 格式 !');
 				}
 				if (!isLt2M) {
-					this.$message.error('上传头像图片大小不能超过 2MB!');
+					this.$message.error('上传头像图片大小不能超过 2MB !');
 				}
-				return isJPG && isLt2M;
+				return (isJPG || isPNG) && isLt2M;
 			},
 			/**
 			 * 成功上传
 			 */
 			successUpload(response, file, fileList) {
-				console.log(response)
+				// console.log(response)
 				if (response.code == 200) {
 					this.imageData = response.data
+					this.isShowPrev = true
 				}
 			},
-			handleRemove(file, fileList) {
-				console.log(file, fileList);
-			},
-
 		}
 	}
 </script>

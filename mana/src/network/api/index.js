@@ -61,3 +61,10 @@ export function resumeDownload(params, success, failure) {
 export function saveResumeImage(params, success, failure) {
 	return request.post('resume/saveResumeImage', params, success, failure)
 }
+
+/**
+ * 退出登录
+ */
+export function singOut(params, success, failure) {
+	return request.post('user/signOut', params, success, failure)
+}
