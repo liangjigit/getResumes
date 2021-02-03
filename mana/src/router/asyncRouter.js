@@ -1,7 +1,7 @@
 export const asyncRouter = [
 	{
 		//简历管理
-		path: '/',
+		path: 'resume',
 		name: 'resumeMana',
 		component: () => import( /* webpackChunkName: "resume" */ '@/views/resumeMana/resumeMana'),
 		meta: {
@@ -22,13 +22,13 @@ export const asyncRouter = [
 		}
 	},
 	{
-		//我是人才
-		path: '',
+		//我有才华
+		path: 'talent',
 		name: 'talentMana',
 		component: () => import( /* webpackChunkName: "talent" */ '@/views/talent/talent'),
 		meta: {
 			requiresAuth: true,
-			title: '我是人才',
+			title: '我有才华',
 			role: ['CEO']
 		}
 	},

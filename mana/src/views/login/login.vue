@@ -54,7 +54,7 @@
 					username: _this.username,
 					password: _this.password
 				})
-				console.log(response)
+				// console.log(response)
 				if (response.code == 200) {
 					let {name,status}= JSON.parse(response.msg)
 					status = parseInt(status)
@@ -70,6 +70,7 @@
 					window.localStorage.setItem('manager-token', response.data)
 					window.localStorage.setItem('user-role', userRole)
 					window.localStorage.setItem('username',name)
+					window.localStorage.setItem('type',status)
 					_this.$router.push('/')
 				} else {
 					_this.$message({

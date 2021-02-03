@@ -65,6 +65,6 @@ export function saveResumeImage(params, success, failure) {
 /**
  * 退出登录
  */
-export function singOut(params, success, failure) {
-	return request.post('user/signOut', params, success, failure)
+export function signOut(success, failure) {
+	return request.post('user/signOut', success, failure)
 }

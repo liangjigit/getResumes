@@ -1,8 +1,15 @@
 import request from '../index.js'
 
 /**
- * 获取所有图片的接口
+ * 获取所有才华的接口
  */
-export function getAllImage(params, success, failure) {
-	return request.post('service/data/selectAll', params, success, failure)
+export function getAllTalent(params, success, failure,configuration) {
+	return request.post('reserve/personnel/findAll', params, success, failure,configuration)
+}
+
+/**
+ * 获取所有需求的接口
+ */
+export function getAllDemand(params, success, failure,configuration) {
+	return request.post('reserve/demand/findAll', params, success, failure,configuration)
 }

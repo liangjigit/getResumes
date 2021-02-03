@@ -24,9 +24,8 @@
 
 <script>
 	import {
-		GLOBAL_URL
-	} from '@/utils/GLOBAL.js'
-	const axios = require('axios')
+		getAllDemand
+	} from '@/network/api/talent.js'
 	export default {
 		name: 'demandList',
 		data() {
@@ -36,21 +35,20 @@
 					page: 1,
 					size: 10,
 					demand: {
-	
+
 					}
 				},
 				tableData: [],
-				totalNumber:1
+				totalNumber: 1
 			}
 		},
-		watch:{
+		watch: {
 			pageChange(v, o) {
 				// console.log(v)
 				this.getAllData()
 			}
 		},
 		created() {
-			this.url = GLOBAL_URL
 			this.getAllData()
 		},
 		methods: {
@@ -60,22 +58,16 @@
 			getAllData() {
 				const _this = this
 				const param = _this.param
-				const url = _this.url + 'service/demand/findAll'
 				param.demand = JSON.stringify(_this.param.demand)
-				axios.post(url, param, {
-					headers: {
-						'Content-Type': 'application/json'
+				getAllDemand(param, res => {
+					console.log(res)
+					if (res.code == 200) {
+						_this.tableData = JSON.parse(res.data)
+						_this.totalNumber = JSON.parse(dres.data).length
 					}
-				}).then(res => {
-					const {data} = res
-					// console.log(data)
-					if(data.code == 200){
-						_this.tableData = JSON.parse(data.data)
-						_this.totalNumber = JSON.parse(data.data).length
-					}
-				}).catch(err => {
+				}, err => {
 					console.log(err)
-				})
+				}, 'application/json')
 			},
 			/**
 			 * 切换页码时

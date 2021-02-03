@@ -22,9 +22,8 @@
 
 <script>
 	import {
-		GLOBAL_URL
-	} from '@/utils/GLOBAL.js'
-	const axios = require('axios')
+		getAllTalent
+	} from '@/network/api/talent.js'
 	export default {
 		name: 'talentList',
 		data() {
@@ -38,17 +37,16 @@
 					}
 				},
 				tableData: [],
-				totalNumber:1
+				totalNumber: 1
 			}
 		},
-		watch:{
+		watch: {
 			pageChange(v, o) {
 				// console.log(v)
 				this.getAllData()
 			}
 		},
 		created() {
-			this.url = GLOBAL_URL
 			this.getAllData()
 		},
 		methods: {
@@ -58,22 +56,16 @@
 			getAllData() {
 				const _this = this
 				const param = _this.param
-				const url = _this.url + 'service/personnel/findAll'
 				param.personnel = JSON.stringify(_this.param.personnel)
-				axios.post(url, param, {
-					headers: {
-						'Content-Type': 'application/json'
+				getAllTalent(param, res => {
+					console.log(res)
+					if (res.code == 200) {
+						_this.tableData = res.data
+						_this.totalNumber = res.data.length
 					}
-				}).then(res => {
-					const {data} = res
-					// console.log(data)
-					if(data.code == 200){
-						_this.tableData = data.data
-						_this.totalNumber = data.data.length
-					}
-				}).catch(err => {
+				}, err => {
 					console.log(err)
-				})
+				}, 'application/json')
 			},
 			/**
 			 * 切换页码时

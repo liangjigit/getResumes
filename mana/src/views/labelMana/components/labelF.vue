@@ -6,7 +6,7 @@
 					<el-pagination layout="total,prev, pager, next, jumper" :total="totalNumber" :current-page="pageSizes.page"
 					 @prev-click="changePage" @next-click="changePage" @current-change="changePage">
 					</el-pagination>
-					<el-button style="line-height: 5px;margin-left: 10px;" type="primary">确定
+					<el-button style="line-height: 5px;margin-left: 10px;" type="success">确定
 					</el-button>
 				</el-col>
 			</el-row>

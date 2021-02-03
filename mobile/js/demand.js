@@ -1,7 +1,7 @@
 //测试环境
-axios.defaults.baseURL = 'http://192.168.52.25:7300'
+// axios.defaults.baseURL = 'http://192.168.52.25:7300'
 //生产环境
-// axios.defaults.baseURL = 'http://np.aimergroup.com:8081/api/'
+axios.defaults.baseURL = 'http://np.aimergroup.com:8081/api/'
 new Vue({
 	el: '#app',
 	data: {
@@ -19,9 +19,49 @@ new Vue({
 			linkman: '',
 			phone: '',
 			need: ''
+		},
+		imageShow: '',
+		imgArr: []
+	},
+	watch: {
+		active(v) {
+			console.log(v)
+			if (v == 'a') {
+				this.imageShow = this.imgArr.filter(item => {
+					return item.type == "Personnel"
+				})[0].name
+			} else {
+				this.imageShow = this.imgArr.filter(item => {
+					return item.type == "DEMAND"
+				})[0].name
+			}
 		}
 	},
+	created() {
+		this.getShowPic()
+	},
 	methods: {
+		/**
+		 * 获取展示图片
+		 */
+		getShowPic() {
+			const _this = this
+			axios({
+				method: 'post',
+				url: 'reserve/data/selectAll'
+			}).then(res => {
+				console.log(res)
+				if (res.data.code == 200) {
+					_this.imgArr = res.data.data
+					_this.imageShow = res.data.data.filter(item => {
+						return item.type == "Personnel"
+					})[0].name
+					// console.log(_this.imageShow)
+				}
+			}, err => {
+				console.log(err)
+			})
+		},
 		//textarea改变的时候
 		changeArea(type) {
 			if (type == 'talent') {
@@ -98,7 +138,7 @@ new Vue({
 				let sendType = ''
 				let sendData = ''
 				if (type == 'talent') {
-					sendType = '/service/personnel/save'
+					sendType = '/reserve/personnel/save'
 					const data = {
 						name: _this.talent.name,
 						phone: _this.talent.phone,
@@ -106,12 +146,12 @@ new Vue({
 					}
 					sendData = JSON.stringify(data, null, 2)
 				} else {
-					sendType = '/service/demand/save'
+					sendType = '/reserve/demand/save'
 					const data = {
-						name:_this.demand.linkman,
-						department:_this.demand.department,
-						phone:_this.demand.phone,
-						detail:_this.demand.need
+						name: _this.demand.linkman,
+						department: _this.demand.department,
+						phone: _this.demand.phone,
+						detail: _this.demand.need
 					}
 					sendData = JSON.stringify(data, null, 2)
 				}

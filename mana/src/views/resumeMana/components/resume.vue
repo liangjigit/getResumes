@@ -137,8 +137,10 @@
 						height: 842
 					}).then(function(canvas) {
 						//转化参数
-						let params = new URLSearchParams()
-						params.append('imgStr', _this.saveAsPNG(canvas))
+						// let params = new URLSearchParams()
+						// params.append('imgStr', _this.saveAsPNG(canvas))
+						const params = {}
+						params.imgStr = _this.saveAsPNG(canvas)
 						_this.saveImage(params)
 					})
 				})
@@ -151,7 +153,7 @@
 					_this.getAllResumePicArr.push(res.data[0] + 'AIMERPERSONNEL' + _this.resumeTime + _this.soleData.name)
 					if ((_this.moreDataIndex + 1) == _this.moreDataLength) {
 						let getAllResumePicString = _this.getAllResumePicArr.join(',')
-						window.open('http://np.aimergroup.com:8081/api/resume/uploadResume?resumeStr=' + _this.getAllResumePic)
+						window.open('http://np.aimergroup.com:8081/api/resume/uploadResume?resumeStr=' + getAllResumePicString)
 						setTimeout(function() {
 							window.location.reload()
 						}, 2000)

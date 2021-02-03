@@ -1,9 +1,9 @@
 <template>
 	<div id="index">
 		<el-container style="height: 100vh; border: 1px solid #eee">
-			<Aside />
+			<Aside @delTitle="delTitle" />
 			<el-container>
-				<Elheader />
+				<Elheader :title="title" />
 				<el-main>
 					<router-view></router-view>
 				</el-main>
@@ -26,20 +26,16 @@
 			Elheader
 		},
 		data() {
-			const item = {
-				date: '2016-05-02',
-				name: '王小虎',
-				address: '上海市普陀区金沙江路 1518 弄'
-			};
 			return {
-				tableData: Array(20).fill(item)
+				title:''
 			}
-		},
-		created() {
-			console.log(this.$router)
 		},
 		methods: {
 			...mapActions(['getUserPermissions']),
+			delTitle(t){
+				// console.log(t)
+				this.title = t
+			},
 			/**
 			 * 对二级列表进行处理
 			 */

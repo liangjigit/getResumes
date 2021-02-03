@@ -15,7 +15,7 @@ Vue.use(VueRouter)
 //解决 NavigationDuplicated: Avoided redundant navigation to current location: ""报错
 const originalPush = VueRouter.prototype.push;
 VueRouter.prototype.push = function push(location) {
-  return originalPush.call(this, location).catch(err => err);
+	return originalPush.call(this, location).catch(err => err);
 };
 
 const routes = [{
@@ -33,7 +33,6 @@ const routes = [{
 	{
 		//App.vue首页
 		path: '/',
-		name: 'index',
 		component: () => import( /* webpackChunkName: "index" */ '@/components/layout/index.vue'),
 		// redirect: to => {
 		//       // 方法接收 目标路由 作为参数
@@ -44,52 +43,51 @@ const routes = [{
 			requiresAuth: true,
 			title: '首页'
 		},
-		children: [
-	{
-		//简历管理
-		path: '',
-		name: 'resumeMana',
-		component: () => import( /* webpackChunkName: "resume" */ '@/views/resumeMana/resumeMana'),
-		meta: {
-			requiresAuth: true,
-			title: '简历管理',
-			role: ['personnel']
-		}
-	},
-	{
-		//标签管理
-		path: 'label',
-		name: 'labelMana',
-		component: () => import( /* webpackChunkName: "label" */ '@/views/labelMana/labelMana'),
-		meta: {
-			requiresAuth: true,
-			title: '标签管理',
-			role: ['personnel']
-		}
-	},
-	{
-		//我是人才
-		path: '',
-		name: 'talentMana',
-		component: () => import( /* webpackChunkName: "talent" */ '@/views/talent/talent'),
-		meta: {
-			requiresAuth: true,
-			title: '我是人才',
-			role: ['CEO']
-		}
-	},
-	{
-		//我有需求
-		path: 'demand',
-		name: 'demandMana',
-		component: () => import( /* webpackChunkName: "demand" */ '@/views/demand/demand'),
-		meta: {
-			requiresAuth: true,
-			title: '我有需求',
-			role: ['CEO']
-		}
-	},
-]
+		children: [{
+				//简历管理
+				path: 'resume',
+				name: 'resumeMana',
+				component: () => import( /* webpackChunkName: "resume" */ '@/views/resumeMana/resumeMana'),
+				meta: {
+					requiresAuth: true,
+					title: '简历管理',
+					role: ['personnel']
+				}
+			},
+			{
+				//标签管理
+				path: 'label',
+				name: 'labelMana',
+				component: () => import( /* webpackChunkName: "label" */ '@/views/labelMana/labelMana'),
+				meta: {
+					requiresAuth: true,
+					title: '标签管理',
+					role: ['personnel']
+				}
+			},
+			{
+				//我有才华
+				path: 'talent',
+				name: 'talentMana',
+				component: () => import( /* webpackChunkName: "talent" */ '@/views/talent/talent'),
+				meta: {
+					requiresAuth: true,
+					title: '我有才华',
+					role: ['CEO']
+				}
+			},
+			{
+				//我有需求
+				path: 'demand',
+				name: 'demandMana',
+				component: () => import( /* webpackChunkName: "demand" */ '@/views/demand/demand'),
+				meta: {
+					requiresAuth: true,
+					title: '我有需求',
+					role: ['CEO']
+				}
+			},
+		]
 	},
 ]
 
@@ -106,14 +104,14 @@ router.beforeEach((to, from, next) => {
 		let managerToken = window.localStorage.getItem('manager-token')
 		let userRole = window.localStorage.getItem('user-role')
 		if (managerToken && userRole) {
-			// console.log(111)
+			window.localStorage.setItem('title', to.meta.title)
 			// const activeAsync = asyncRouter.filter(item => {
 			// 	return item.meta.role.includes(userRole)
 			// })
 			// 	activeAsync.forEach(item => {
 			// 		router.addRoute('index', item)
 			// 	})
-				// router.options.routes[1].children = [...activeAsync]
+			// router.options.routes[1].children = [...activeAsync]
 			// const nextPath = '/' + activeAsync[0].path
 			// console.log(nextPath)
 			next()

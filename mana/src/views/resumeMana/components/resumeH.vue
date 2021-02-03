@@ -15,7 +15,7 @@
 				</el-col>
 				<el-col :span="6">
 					<el-input v-model="searchInput.phone" placeholder="请输入手机号/姓名/工号" style="width: 80%;" @keyup.enter.native="searchPnc"></el-input>
-					<span @click="searchPnc" style="cursor: pointer;">搜索</span>
+					<span @click="searchPnc" style="cursor: pointer;margin-left: 10px;">搜索</span>
 				</el-col>
 			</el-row>
 			<el-row :gutter="20" style="line-height: 45px;border-top: 1px solid #edecec;margin: 0;font-size: 'Arial Normal', 'Arial';">
@@ -54,7 +54,7 @@
 					</div>
 				</el-col>
 			</el-row>
-			<el-row :gutter="20" style="line-height: 45px;border-top: 1px solid #edecec;margin: 0;font-size: 'Arial Normal', 'Arial';border-bottom: 2px solid #656565;padding-bottom: 7px;">
+			<el-row :gutter="20" style="line-height: 45px;border-top: 1px solid #edecec;margin: 0;font-size: 'Arial Normal', 'Arial';border-bottom: 2px solid #656565;padding-bottom: 7px;padding-top: 5px">
 				<el-col :span="2">
 					<div class="grid-content bg-purple" style="float: right;">发布时间</div>
 				</el-col>
@@ -70,7 +70,7 @@
 							</div>
 						</li>
 						<li style="list-style: none;margin-left:300px;">
-							<el-button type="primary" @click="filterInfo">筛选</el-button>
+							<el-button type="success" @click="filterInfo">筛选</el-button>
 							<el-button type="info" @click="emptyInfo">清空选择</el-button>
 						</li>
 					</ul>

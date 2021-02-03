@@ -52,10 +52,15 @@ function message(title, sure, next) {
 //设置请求拦截
 axios.interceptors.request.use(
 	config => {
-		const token = window.localStorage.getItem("token");
-		if (token) {
+		if(config.headers['Content-Type'] =='application/json'){
+			config.data = Qs.parse(config.data)
+		}
+		const token = window.localStorage.getItem("manager-token");
+		const type = window.localStorage.getItem('type')
+		if (token && type) {
 			// 判断是否存在token，如果存在的话，则每个http header都加上token
 			config.headers.token = token; //Authorization是登录接口返回
+			config.headers.type = type;
 		}
 		return config;
 	},
@@ -72,9 +77,18 @@ axios.interceptors.response.use(
 		switch (code) {
 			//登录超时
 			case '505':
-				window.open('http://np.aimergroup.com:8081/api/user/signOut', '_self')
-				window.localStorage.removeItem('token')
-				message('登录超时, 是否重新登录?', '重新登录', '/login', );
+				window.localStorage.removeItem('manager-token')
+				window.localStorage.removeItem('user-role')
+				window.localStorage.removeItem('username')
+				window.localStorage.removeItem('title')
+				window.localStorage.removeItem('type')
+				// window.open('http://np.aimergroup.com:8081/api/user/signOut', '_self')
+				Message.error('登录超时，请重新登陆！')
+				window.setTimeout(() => {
+					router.replace({
+						path: '/login'
+					})
+				}, 2000)
 				break;
 		}
 		return response;
@@ -91,7 +105,7 @@ axios.interceptors.response.use(
 );
 
 //处理接口函数
-function apiAxios(method, url, params, success, failure, configuration) {
+function apiAxios(method, url, params, success, failure, configuration='application/x-www-form-urlencoded') {
 	if (params) {
 		params = filterNull(params)
 	}
@@ -105,7 +119,7 @@ function apiAxios(method, url, params, success, failure, configuration) {
 			withCredentials: true,
 			timeout: 30000,
 			headers: {
-				'resource_token': configuration
+				'Content-Type': configuration
 			}
 		})
 		.then(function(res) {
@@ -130,7 +144,7 @@ export default {
 	get: function(url, params, success, failure, configuration) {
 		return apiAxios('GET', url, params, success, failure, configuration)
 	},
-	post: function(url, params, success, failure, configuration = 'order-list') {
+	post: function(url, params, success, failure, configuration) {
 		return apiAxios('POST', url, params, success, failure, configuration)
 	},
 	put: function(url, params, success, failure, configuration) {

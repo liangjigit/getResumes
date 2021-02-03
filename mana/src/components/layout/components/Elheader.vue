@@ -1,7 +1,7 @@
 <template>
 	<el-header>
-		<div style="position: absolute;color: #656565;font-size: 18px;">后台管理</div>
-		<div style="position: absolute;right: 150px;display: flex;justify-content: center;align-items: center;">
+		<div style="position: absolute;color: #656565;font-size: 18px;">{{title == '' ? initTitle : title}}</div>
+		<div style="position: absolute;right: 150px;display: flex;justify-content: center;align-items: center;font-size: 16px;">
 			<span>{{usernametop}}</span>
 		</div>
 		<div style="position: absolute; cursor: pointer;right: 30px;" @click="logOut">退出登录</div>
@@ -10,17 +10,30 @@
 
 <script>
 	import {
-		singOut
+		signOut
 	} from '@/network/api/index.js'
 	export default {
 		name: 'Elheader',
+		props:{
+			title:{
+				type:String,
+				default:''
+			}
+		},
 		data() {
 			return {
-				usernametop: ''
+				usernametop: '',
+				initTitle:''
 			}
 		},
 		created() {
 			this.usernametop = window.localStorage.getItem('username')
+			this.initTitle = window.localStorage.getItem('title')
+		},
+		mounted() {
+			// this.$bus.$on('delTitle',title=>{
+			// 	this.title = title
+			// })
 		},
 		methods: {
 			/**
@@ -28,15 +41,18 @@
 			 */
 			logOut() {
 				const _this = this
-				signOut({}, res => {
+				signOut(res => {
 					console.log(res)
-					if (res.code == 200) {
+				}, err => {
+					// console.log(err)
+					if (err.code == 200) {
 						window.localStorage.removeItem('manager-token')
 						window.localStorage.removeItem('user-role')
-						_this.router.push('/login')
+						window.localStorage.removeItem('username')
+						window.localStorage.removeItem('title')
+						window.localStorage.removeItem('type')
+						_this.$router.push('/login')
 					}
-				}, err => {
-					console.log(err)
 				})
 			}
 		}

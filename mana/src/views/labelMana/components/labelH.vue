@@ -1,15 +1,15 @@
 <template>
 	<div id="labelH">
-		<el-row :gutter="20" style="line-height: 60px;border-top: 1px solid #edecec;margin: 0;font-size: 'Arial Normal', 'Arial';">
+		<!-- <el-row :gutter="20" style="line-height: 60px;border-top: 1px solid #edecec;margin: 0;font-size: 'Arial Normal', 'Arial';">
 			<el-col :span="6">
 				<div class="grid-content bg-purple" style="margin-left:-150px;font-size: 0.3rem;font-weight: bolder;">标签管理</div>
 			</el-col>
-		</el-row>
+		</el-row> -->
 		<div>
 			<el-row :gutter="20" style="line-height: 60px;border-top: 1px solid #edecec;border-bottom: 1px solid #edecec;margin: 0;">
 				<el-col :span="6">
 					<div class="grid-content bg-purple" style="margin-left:-120px">
-						<el-button type="primary" @click="addLabel">添加标签</el-button>
+						<el-button type="success" @click="addLabel">添加标签</el-button>
 					</div>
 				</el-col>
 			</el-row>

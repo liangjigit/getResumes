@@ -6,7 +6,7 @@
 					<el-pagination layout="total,prev, pager, next, jumper" :total="resumeMember" :page-size="10" @prev-click="changeResumePage"
 					 @next-click="changeResumePage" @current-change="changeResumePage" :current-page.sync="currentPage">
 					</el-pagination>
-					<el-button style="line-height: 5px;margin-left: 15px;" type="primary">确定
+					<el-button style="line-height: 5px;margin-left: 15px;" type="success">确定
 					</el-button>
 				</el-col>
 			</el-row>
@@ -120,7 +120,7 @@
 			getResume(param) {
 				const _this = this
 				getResume(param, res => {
-					console.log(res)
+					// console.log(res)
 					if (res.code == 200) {
 						_this.resumeMember = parseInt(res.msg)
 						const resumeData = res.data
