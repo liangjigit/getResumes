@@ -13,3 +13,10 @@ export function getAllTalent(params, success, failure,configuration) {
 export function getAllDemand(params, success, failure,configuration) {
 	return request.post('reserve/demand/findAll', params, success, failure,configuration)
 }
+
+/**
+ * 保存海报图片
+ */
+export function savePosterImage(params, success, failure,configuration) {
+	return request.post('reserve/data/save', params, success, failure,configuration)
+}

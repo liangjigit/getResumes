@@ -10,7 +10,7 @@
 			</div>
 			<div class="preview">
 				<div class="box">
-					<img :src="imageData.name" />
+					<img :src="imageUrl" />
 					<div class="show">
 						<div class="simulate">
 							<span>*</span>
@@ -46,7 +46,7 @@
 	} from '@/utils/GLOBAL.js'
 	import demandList from './components/demandList.vue'
 	import {
-		getAllImage
+		savePosterImage
 	} from '@/network/api/talent.js'
 	export default {
 		name: 'demandMana',
@@ -57,6 +57,9 @@
 			return {
 				actionUrl: '',
 				param: {
+					file: ''
+				},
+				saveImageParam: {
 					type: 'DEMAND',
 					url: ''
 				},
@@ -64,14 +67,12 @@
 					token:'',
 					type:'2'
 				},
-				imageData: {
-					name:''
-				},
+				imageUrl:'',
 				fileList: [],
 			};
 		},
 		created() {
-			this.actionUrl = GLOBAL_URL + 'reserve/data/save'
+			this.actionUrl = GLOBAL_URL + 'resume/saveImage'
 			this.headers.token = window.localStorage.getItem('manager-token')
 		},
 		methods: {
@@ -80,7 +81,7 @@
 			 */
 			changeImage(file, fileList) {
 				// console.log(file)
-				this.param.url = file.url
+				this.param.file = file.url
 			},
 			/**
 			 * 测试文件类型
@@ -102,10 +103,23 @@
 			 */
 			successUpload(response, file, fileList) {
 				// console.log(response)
-				if (response.code == 200) {
-					this.imageData = response.data
-				}
+				this.saveImageParam.url = response
+				this.saveImage()
 			},
+			/**
+			 * 保存图片请求
+			 */
+			saveImage() {
+				const _this = this
+				savePosterImage(_this.saveImageParam, res => {
+					console.log(res)
+					if (res.code == 200) {
+						this.imageUrl = res.data.name
+					}
+				}, err => {
+					console.log(err)
+				})
+			}
 		}
 	}
 </script>

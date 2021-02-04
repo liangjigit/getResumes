@@ -13,10 +13,10 @@
 		<div id="app">
 			<van-tabs v-model="active">
 				<van-tab title="我有才华" name="a">
+					<div style="width: 100%;margin: 20px auto;">
+						<img :src="imageShow" width="100%" />
+					</div>
 					<div class="basic-info">
-						<p>
-							<img :src="imageShow"  />
-						</p>
 						<p>
 							<span>*</span>
 							<span>姓名:</span>
@@ -47,10 +47,13 @@
 						</div>
 					</div>
 					<div class="submit-result">
-						<van-button type="info" @click="submit('talent')">提交</van-button>
+						<van-button type="info" style="width: 50%;" @click="submit('talent')">提交</van-button>
 					</div>
 				</van-tab>
 				<van-tab title="我有需求" name="b">
+					<div style="width: 100%;margin: 20px auto;">
+						<img :src="imageShow" width="100%" />
+					</div>
 					<div class="basic-info">
 						<p>
 							<span>*</span>
@@ -87,7 +90,7 @@
 						</div>
 					</div>
 					<div class="submit-result">
-						<van-button type="info" @click="submit('demand')">提交</van-button>
+						<van-button type="info" style="width: 50%;" @click="submit('demand')">提交</van-button>
 					</div>
 				</van-tab>
 			</van-tabs>

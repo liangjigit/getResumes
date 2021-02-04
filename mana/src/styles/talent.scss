@@ -22,13 +22,31 @@
 				.box {
 					width: 225px;
 					height: 400.2px;
-					border: 3px solid #009999;
+					border: 1px solid #009999;
 					overflow: auto;
-					border-radius: 10px;
+					// border-radius: 10px;
 					display: flex;
 					flex-direction: column;
 					align-items: center;
-
+&::-webkit-scrollbar{
+  width:3px;
+  // height:2px;
+}
+&::-webkit-scrollbar-track{
+  background: #F0F7FF;
+  // border-radius:2px;
+	opacity: 0;
+}
+&::-webkit-scrollbar-thumb{
+  background: #B3E19D;
+  // border-radius:10px;
+}
+&::-webkit-scrollbar-thumb:hover{
+  background: #B8D7A3;
+}
+&::-webkit-scrollbar-corner{
+  background: #179a16;
+}
 					img {
 						width: 100%;
 					}

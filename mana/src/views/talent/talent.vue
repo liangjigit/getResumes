@@ -2,15 +2,15 @@
 	<div id="talent">
 		<div class="uploadImage">
 			<div class="addImage">
-				<el-upload class="upload-demo" :before-upload="beforeAvatarUpload" :action="actionUrl" :data="param" :headers="headers" :on-change="changeImage"
-				 :file-list="fileList" list-type="picture" :on-success="successUpload">
+				<el-upload class="upload-demo" :before-upload="beforeAvatarUpload" :action="actionUrl" :data="param" :headers="headers"
+				 :on-change="changeImage" :file-list="fileList" list-type="picture" :on-success="successUpload">
 					<el-button size="small" type="success">点击上传海报</el-button>
 					<div slot="tip" class="el-upload__tip">只能上传jpg或png文件，且文件大小不超过2MB</div>
 				</el-upload>
 			</div>
 			<div class="preview">
 				<div class="box">
-					<img :src="imageData.name" />
+					<img :src="imageUrl" />
 					<div class="show">
 						<div class="simulate">
 							<span>*</span>
@@ -40,6 +40,9 @@
 		GLOBAL_URL
 	} from '@/utils/GLOBAL.js'
 	import talentList from './components/talentList.vue'
+	import {
+		savePosterImage
+	} from '@/network/api/talent.js'
 	export default {
 		name: 'talentMana',
 		components: {
@@ -49,21 +52,22 @@
 			return {
 				actionUrl: '',
 				param: {
+					file: ''
+				},
+				headers: {
+					token: '',
+					type: '2'
+				},
+				saveImageParam: {
 					type: 'Personnel',
 					url: ''
 				},
-				headers:{
-					token:'',
-					type:'2'
-				},
-				imageData: {
-					name:''
-				},
+				imageUrl:'',
 				fileList: [],
 			};
 		},
 		created() {
-			this.actionUrl = GLOBAL_URL + 'reserve/data/save'
+			this.actionUrl = GLOBAL_URL + 'resume/saveImage'
 			this.headers.token = window.localStorage.getItem('manager-token')
 		},
 		methods: {
@@ -77,7 +81,7 @@
 				const isLt2M = file.size / 1024 / 1024 < 2;
 				if (!isJPG && !isPNG) {
 					this.$message.error('上传头像图片只能是 JPG 或 PNG 格式 !');
-				}else if (!isLt2M) {
+				} else if (!isLt2M) {
 					this.$message.error('上传头像图片大小不能超过 2MB !');
 				}
 				return (isJPG || isPNG) && isLt2M;
@@ -87,17 +91,30 @@
 			 */
 			changeImage(file, fileList) {
 				// console.log(file)
-				this.param.url = file.url
+				this.param.file = file.url
 			},
 			/**
 			 * 成功上传
 			 */
 			successUpload(response, file, fileList) {
 				// console.log(response)
-				if (response.code == 200) {
-					this.imageData = response.data
-				}
+				this.saveImageParam.url = response
+				this.saveImage()
 			},
+			/**
+			 * 保存图片请求
+			 */
+			saveImage() {
+				const _this = this
+				savePosterImage(_this.saveImageParam, res => {
+					console.log(res)
+					if (res.code == 200) {
+						this.imageUrl = res.data.name
+					}
+				}, err => {
+					console.log(err)
+				})
+			}
 		}
 	}
 </script>

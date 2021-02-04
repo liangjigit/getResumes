@@ -253,6 +253,8 @@ span:nth-child(5) {
 
 .submit-result {
     padding: 0.6rem 0.6rem;
+		display: flex;
+		justify-content: center;
 }
 
 textarea {
