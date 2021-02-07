@@ -151,6 +151,7 @@
 						// console.log(res)
 						if (res.code == 200) {
 							//console.log(res.data.data.length)
+							_this.seleId = ''
 							if (res.data.length == 1) {
 								_this.deleSingle(deleteId, 0)
 							} else {

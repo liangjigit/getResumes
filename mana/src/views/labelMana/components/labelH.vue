@@ -26,7 +26,7 @@
 		name: 'labelH',
 		mounted() {
 			const _this = this
-			_this.$bus.$on('finishDele',()=>{
+			_this.$bus.$on('finishDele', () => {
 				_this.toNewLabel()
 			})
 		},
@@ -38,28 +38,42 @@
 				const _this = this
 				_this.$prompt('标签名称', '', {
 					confirmButtonText: '确认添加',
-					cancelButtonText: '取消'
+					cancelButtonText: '取消',
+					closeOnClickModal: false
 				}).then(({
 					value
 				}) => {
-					saveLabel({
-						lableName: value
-					}, res => {
-						if (res.code == 200) {
-							_this.$message({
-								type: 'success',
-								message: res.data
-							})
-							_this.toNewLabel()
-						} else if (res.code == 500) {
-							_this.$message({
-								type: 'error',
-								message: res.msg
-							})
-						}
-					}, err => {
-						console.log(err)
-					})
+					// console.log(value)
+					if (value == null) {
+						_this.$message({
+							type: 'error',
+							message: '标签名称不能为空！'
+						})
+					} else if (value.length > 15) {
+						_this.$message({
+							type: 'warning',
+							message: '标签名称长度过长！'
+						})
+					} else {
+						saveLabel({
+							lableName: value
+						}, res => {
+							if (res.code == 200) {
+								_this.$message({
+									type: 'success',
+									message: res.data
+								})
+								_this.toNewLabel()
+							} else if (res.code == 500) {
+								_this.$message({
+									type: 'error',
+									message: res.msg
+								})
+							}
+						}, err => {
+							console.log(err)
+						})
+					}
 				}).catch(() => {
 					_this.$message({
 						type: 'info',
@@ -76,7 +90,10 @@
 					if (res.code == 200) {
 						let lastPage = Math.ceil(res.data.length / 10)
 						let totalNumber = res.data.length
-						const last = {lastPage,totalNumber}
+						const last = {
+							lastPage,
+							totalNumber
+						}
 						_this.$emit('showLastPage', last)
 					}
 				})
@@ -85,5 +102,6 @@
 	}
 </script>
 
-<style>
+<style lang="scss" scoped>
+
 </style>

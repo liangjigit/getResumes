@@ -2,15 +2,17 @@
 	<div id="talent">
 		<div class="uploadImage">
 			<div class="addImage">
-				<el-upload class="upload-demo" :before-upload="beforeAvatarUpload" :action="actionUrl" :data="param" :headers="headers" :on-change="changeImage"
-				 :file-list="fileList" list-type="picture" :on-success="successUpload">
-					<el-button size="small" type="success">点击上传海报</el-button>
+				<el-upload class="upload-demo" ref="upload" :before-upload="beforeAvatarUpload" :action="actionUrl" :data="param"
+				 :headers="headers" :file-list="fileList" :on-change="changeImage" list-type="picture" :on-success="successUpload"
+				 :auto-upload="false">
+					<el-button slot="trigger" size="small" type="primary">点击预览海报</el-button>
+					<el-button style="margin-left: 10px;" size="small" type="success" @click="submitUpload">确认上传海报</el-button>
 					<div slot="tip" class="el-upload__tip">只能上传jpg或png文件，且文件大小不超过2MB</div>
 				</el-upload>
 			</div>
 			<div class="preview">
 				<div class="box">
-					<img :src="imageUrl" />
+					<img :src="param.file" />
 					<div class="show">
 						<div class="simulate">
 							<span>*</span>
@@ -77,11 +79,18 @@
 		},
 		methods: {
 			/**
+			 * 手动上传
+			 */
+			submitUpload() {
+				this.$refs.upload.submit();
+			},
+			/**
 			 * 图片状态更改 获取最新blob
 			 */
 			changeImage(file, fileList) {
 				// console.log(file)
 				this.param.file = file.url
+				this.fileList = fileList.slice(-1)
 			},
 			/**
 			 * 测试文件类型
@@ -115,6 +124,7 @@
 					console.log(res)
 					if (res.code == 200) {
 						this.imageUrl = res.data.name
+						this.$message.success('海报上传成功！')
 					}
 				}, err => {
 					console.log(err)
