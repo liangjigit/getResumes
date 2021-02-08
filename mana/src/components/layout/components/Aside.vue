@@ -20,7 +20,7 @@
 	export default {
 		name: 'Aside',
 		created() {
-			let userRole = window.localStorage.getItem('user-role')
+			let userRole = window.sessionStorage.getItem('user-role')
 			this.activeAsync = asyncRouter.filter(item => {
 				return item.meta.role.includes(userRole)
 			})

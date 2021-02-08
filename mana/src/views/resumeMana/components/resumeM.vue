@@ -172,7 +172,7 @@
 				let deleteId = table[index].id
 				const _this = this
 				_this.$confirm('此操作将永久删除个人简历, 是否继续?', '提示', {
-					confirmButtonText: '确定',
+					confirmButtonText: '确定删除',
 					cancelButtonText: '取消',
 					type: 'warning'
 				}).then(() => {
@@ -206,7 +206,7 @@
 				//全选情况下
 				if (_this.checked) {
 					_this.$confirm('此操作将永久删除当前所有简历, 是否继续?', '提示', {
-						confirmButtonText: '确定',
+						confirmButtonText: '确定删除',
 						cancelButtonText: '取消',
 						type: 'warning'
 					}).then(() => {
@@ -224,7 +224,7 @@
 						});
 					} else {
 						_this.$confirm('此操作将永久删除您选中的简历, 是否继续?', '提示', {
-							confirmButtonText: '确定',
+							confirmButtonText: '确定删除',
 							cancelButtonText: '取消',
 							type: 'warning'
 						}).then(() => {

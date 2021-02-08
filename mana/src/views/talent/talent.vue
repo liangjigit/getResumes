@@ -70,7 +70,7 @@
 		},
 		created() {
 			this.actionUrl = GLOBAL_URL + 'resume/saveImage'
-			this.headers.token = window.localStorage.getItem('manager-token')
+			this.headers.token = window.sessionStorage.getItem('manager-token')
 		},
 		methods: {
 			/**

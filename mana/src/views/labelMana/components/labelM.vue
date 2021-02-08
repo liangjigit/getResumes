@@ -142,7 +142,7 @@
 				const _this = this
 				let deleteId = table[index].id
 				_this.$confirm('此操作将永久删除标签, 是否继续?', '提示', {
-					confirmButtonText: '确定',
+					confirmButtonText: '确定删除',
 					cancelButtonText: '取消',
 					type: 'warning'
 				}).then(() => {
@@ -208,7 +208,7 @@
 				// 当前页面全选删除
 				if (_this.allSele) {
 					_this.$confirm('此操作将永久删除当前所有标签, 是否继续?', '提示', {
-						confirmButtonText: '确定',
+						confirmButtonText: '确定删除',
 						cancelButtonText: '取消',
 						type: 'warning'
 					}).then(() => {
@@ -227,7 +227,7 @@
 					} else {
 						// console.log(_this.currentPage)
 						_this.$confirm('此操作将永久删除您选中的标签, 是否继续?', '提示', {
-							confirmButtonText: '确定',
+							confirmButtonText: '确定删除',
 							cancelButtonText: '取消',
 							type: 'warning'
 						}).then(() => {

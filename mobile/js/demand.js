@@ -21,7 +21,7 @@ new Vue({
 			need: ''
 		},
 		imageShow: '',
-		imgArr: []
+		imgArr: [],
 	},
 	watch: {
 		active(v) {
@@ -134,7 +134,6 @@ new Vue({
 					loadingType: 'spinner',
 					duration: 0
 				});
-				// _this.isSamename = _this.userInformation.name
 				let sendType = ''
 				let sendData = ''
 				if (type == 'talent') {
@@ -166,6 +165,20 @@ new Vue({
 					console.log(res)
 					vant.Toast.clear()
 					if (res.data.code == 200) {
+						if(type == 'talent'){
+							_this.talent = {
+								name: '',
+								phone: '',
+								idea: ''
+							}
+						}else{
+							_this.demand = {
+								department: '',
+								linkman: '',
+								phone: '',
+								need: ''
+							}
+						}
 						vant.Toast('提交成功！')
 					} else {
 						vant.Toast('提交失败！')

@@ -67,10 +67,10 @@
 						userRole = 'CEO'
 						break;
 					}
-					window.localStorage.setItem('manager-token', response.data)
-					window.localStorage.setItem('user-role', userRole)
-					window.localStorage.setItem('username',name)
-					window.localStorage.setItem('type',status)
+					window.sessionStorage.setItem('manager-token', response.data)
+					window.sessionStorage.setItem('user-role', userRole)
+					window.sessionStorage.setItem('username',name)
+					window.sessionStorage.setItem('type',status)
 					_this.$router.push('/')
 				} else {
 					_this.$message({

@@ -101,10 +101,10 @@ router.beforeEach((to, from, next) => {
 	if (to.matched.some(record => record.meta.requiresAuth)) {
 		// this route requires auth, check if logged in
 		// if not, redirect to login page.
-		let managerToken = window.localStorage.getItem('manager-token')
-		let userRole = window.localStorage.getItem('user-role')
+		let managerToken = window.sessionStorage.getItem('manager-token')
+		let userRole = window.sessionStorage.getItem('user-role')
 		if (managerToken && userRole) {
-			window.localStorage.setItem('title', to.meta.title)
+			window.sessionStorage.setItem('title', to.meta.title)
 			// const activeAsync = asyncRouter.filter(item => {
 			// 	return item.meta.role.includes(userRole)
 			// })

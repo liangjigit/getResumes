@@ -27,8 +27,8 @@
 			}
 		},
 		created() {
-			this.usernametop = window.localStorage.getItem('username')
-			this.initTitle = window.localStorage.getItem('title')
+			this.usernametop = window.sessionStorage.getItem('username')
+			this.initTitle = window.sessionStorage.getItem('title')
 		},
 		mounted() {
 			// this.$bus.$on('delTitle',title=>{
@@ -46,11 +46,11 @@
 				}, err => {
 					// console.log(err)
 					if (err.code == 200) {
-						window.localStorage.removeItem('manager-token')
-						window.localStorage.removeItem('user-role')
-						window.localStorage.removeItem('username')
-						window.localStorage.removeItem('title')
-						window.localStorage.removeItem('type')
+						window.sessionStorage.removeItem('manager-token')
+						window.sessionStorage.removeItem('user-role')
+						window.sessionStorage.removeItem('username')
+						window.sessionStorage.removeItem('title')
+						window.sessionStorage.removeItem('type')
 						_this.$router.push('/login')
 					}
 				})

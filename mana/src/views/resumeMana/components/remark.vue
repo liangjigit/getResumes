@@ -3,21 +3,21 @@
 		<div class="remarks" v-if="addRemark">
 			<div class="remarks-add">
 				<span style="font-size: 18px;position: relative;left: 10px;">备注信息</span>
-				<i class="el-icon-close" style="font-size: 20px;" @click="closeRemark"></i>
+				<i class="el-icon-close" style="font-size: 20px;cursor: pointer;" @click="closeRemark('add')"></i>
 			</div>
 			<div class="add-remarks">
-				<textarea v-model="remarkText"></textarea>
+				<textarea v-model="remarkText" maxlength="100"></textarea>
 			</div>
 			<div style="display: flex;justify-content: space-around">
+				<el-button type="info" @click="closeRemark('add')">取消</el-button>
 				<el-button type="primary" @click="postRemark">确定添加</el-button>
-				<el-button type="info" @click="closeRemark">取消</el-button>
 			</div>
 		</div>
 		<template v-if="seeRemark">
 			<div class="remarks">
 				<div class="top">
 					<p>备注信息</p>
-					<i class="el-icon-close" style="font-size: 20px;" @click="closeRemark"></i>
+					<i class="el-icon-close" style="font-size: 20px;cursor: pointer;" @click="closeRemark('see')"></i>
 				</div>
 				<div class="remark-box">
 					<div style="width: 30%;">时间</div>
@@ -79,10 +79,16 @@
 			/**
 			 * 关掉当前备注框
 			 */
-			closeRemark() {
+			closeRemark(type) {
 				this.seeRemark = false
 				this.addRemark = false
 				this.remarkText = ''
+				if (type == 'add') {
+					this.$message({
+						type: 'info',
+						message: '已取消添加'
+					});
+				}
 			},
 			/**
 			 * 添加更多备注

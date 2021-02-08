@@ -55,8 +55,8 @@ axios.interceptors.request.use(
 		if(config.headers['Content-Type'] =='application/json'){
 			config.data = Qs.parse(config.data)
 		}
-		const token = window.localStorage.getItem("manager-token");
-		const type = window.localStorage.getItem('type')
+		const token = window.sessionStorage.getItem("manager-token");
+		const type = window.sessionStorage.getItem('type')
 		if (token && type) {
 			// 判断是否存在token，如果存在的话，则每个http header都加上token
 			config.headers.token = token; //Authorization是登录接口返回
@@ -77,11 +77,11 @@ axios.interceptors.response.use(
 		switch (code) {
 			//登录超时
 			case '505':
-				window.localStorage.removeItem('manager-token')
-				window.localStorage.removeItem('user-role')
-				window.localStorage.removeItem('username')
-				window.localStorage.removeItem('title')
-				window.localStorage.removeItem('type')
+				window.sessionStorage.removeItem('manager-token')
+				window.sessionStorage.removeItem('user-role')
+				window.sessionStorage.removeItem('username')
+				window.sessionStorage.removeItem('title')
+				window.sessionStorage.removeItem('type')
 				// window.open('http://np.aimergroup.com:8081/api/user/signOut', '_self')
 				Message.error('登录超时，请重新登陆！')
 				window.setTimeout(() => {
