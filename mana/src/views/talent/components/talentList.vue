@@ -6,6 +6,13 @@
 				</el-table-column>
 				<el-table-column prop="phone" label="手机号码" width="180">
 				</el-table-column>
+				<el-table-column label="时间" width="180">
+					<template slot-scope="scope">
+						<div>
+							{{scope.row.createTime | filterTime}}
+						</div>
+					</template>
+				</el-table-column>
 				<el-table-column prop="detail" label="创意介绍">
 				</el-table-column>
 			</el-table>
@@ -58,7 +65,7 @@
 				const param = _this.param
 				param.personnel = JSON.stringify(_this.param.personnel)
 				getAllTalent(param, res => {
-					console.log(res)
+					// console.log(res)
 					if (res.code == 200) {
 						_this.tableData = res.data
 						_this.totalNumber = res.data.length
@@ -80,6 +87,12 @@
 				return this.param.page
 			}
 		},
+		filters: {
+			filterTime(item) {
+				// item.createDate = item.createDate.substr(5, 5) + '  ' + item.createDate.substr(11, 5)
+				return item.substr(0, 10) + '  ' + item.substr(11, 5)
+			}
+		}
 	}
 </script>
 

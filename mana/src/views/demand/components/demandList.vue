@@ -8,6 +8,13 @@
 				</el-table-column>
 				<el-table-column prop="phone" label="手机号码" width="180">
 				</el-table-column>
+				<el-table-column label="时间" width="180">
+					<template slot-scope="scope">
+						<div>
+							{{scope.row.createTime | filterTime}}
+						</div>
+					</template>
+				</el-table-column>
 				<el-table-column prop="detail" label="需求详情">
 				</el-table-column>
 			</el-table>
@@ -60,10 +67,10 @@
 				const param = _this.param
 				param.demand = JSON.stringify(_this.param.demand)
 				getAllDemand(param, res => {
-					console.log(res)
+					// console.log(res)
 					if (res.code == 200) {
 						_this.tableData = JSON.parse(res.data)
-						_this.totalNumber = JSON.parse(dres.data).length
+						_this.totalNumber = JSON.parse(res.data).length
 					}
 				}, err => {
 					console.log(err)
@@ -82,6 +89,18 @@
 				return this.param.page
 			}
 		},
+		filters: {
+			filterTime(item) {
+				const time = new Date(item)
+				let year = time.getFullYear()
+				let month = time.getMonth() + 1
+				let day = time.getDate()
+				let hour = time.getHours()
+				let min = time.getMinutes()
+				let timeStr = `${year}-${month < 10 ? `0${month}`:month}-${day < 10 ? `0${day}`:day}  ${hour<10?`0${hour}`:hour}:${min<10?`0${min}`:min}`
+				return timeStr
+			}
+		}
 	}
 </script>
 

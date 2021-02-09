@@ -11,7 +11,7 @@
 				</el-table-column>
 				<!-- <el-table-column prop="createDate" label="时间" width="60">
 		        </el-table-column> -->
-				<el-table-column label="时间" width="60">
+				<el-table-column label="发布时间" width="60">
 					<template slot-scope="scope">
 						<div>
 							{{scope.row.createDate | filterTime}}
@@ -375,7 +375,7 @@
 		filters: {
 			filterTime(item) {
 				// item.createDate = item.createDate.substr(5, 5) + '  ' + item.createDate.substr(11, 5)
-				return item.substr(5, 5) + '  ' + item.substr(11, 5)
+				return item.substr(0, 10) + '  ' + item.substr(11, 5)
 			}
 		}
 	}
