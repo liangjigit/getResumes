@@ -49,8 +49,9 @@
 					<div class="grid-content bg-purple" style="float: right;">竞聘岗位</div>
 				</el-col>
 				<el-col :span="22">
-					<div style="display: flex;position: relative;top: 8px;">
-						<input type="text" v-model="searchCan.intention" style="width: 250px;height: 25px;">
+					<div style="display: flex;position: relative;">
+						<!-- <input type="text" v-model="searchCan.intention" style="width: 250px;height: 25px;"> -->
+						<el-input v-model="searchCan.intention" style="width: 250px;"></el-input>
 					</div>
 				</el-col>
 			</el-row>

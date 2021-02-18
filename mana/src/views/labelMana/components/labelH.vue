@@ -9,11 +9,12 @@
 			<el-row :gutter="20" style="line-height: 60px;border-top: 1px solid #edecec;border-bottom: 1px solid #edecec;margin: 0;">
 				<el-col :span="6">
 					<div class="grid-content bg-purple" style="margin-left:-120px">
-						<el-button type="success" @click="addLabel">添加标签</el-button>
+						<el-button type="success" @click="showPrompt = true">添加标签</el-button>
 					</div>
 				</el-col>
 			</el-row>
 		</div>
+		<prompt :title="'标签名称'" :cancelText="'取消'" :sureText="'确认添加'" @cancel="cancel" @sureAdd="addLabel" v-if="showPrompt"></prompt>
 	</div>
 </template>
 
@@ -22,8 +23,17 @@
 		saveLabel,
 		getLabel
 	} from '@/network/api/index.js'
+	import prompt from '@/components/common/prompt.vue'
 	export default {
 		name: 'labelH',
+		components: {
+			prompt
+		},
+		data() {
+			return {
+				showPrompt: false
+			}
+		},
 		mounted() {
 			const _this = this
 			_this.$bus.$on('finishDele', () => {
@@ -32,54 +42,47 @@
 		},
 		methods: {
 			/**
+			 * 取消添加标签
+			 */
+			cancel() {
+				this.$message({
+					type: 'info',
+					message: '取消输入'
+				})
+				this.showPrompt = false
+			},
+			/**
 			 * 添加标签
 			 */
-			addLabel() {
+			addLabel(value) {
+				// console.log(value)
 				const _this = this
-				_this.$prompt('标签名称', '', {
-					confirmButtonText: '确认添加',
-					cancelButtonText: '取消',
-					closeOnClickModal: false
-				}).then(({
-					value
-				}) => {
-					// console.log(value)
-					if (value == null) {
-						_this.$message({
-							type: 'error',
-							message: '标签名称不能为空！'
-						})
-					} else if (value.length > 15) {
-						_this.$message({
-							type: 'warning',
-							message: '标签名称长度过长！'
-						})
-					} else {
-						saveLabel({
-							lableName: value
-						}, res => {
-							if (res.code == 200) {
-								_this.$message({
-									type: 'success',
-									message: res.data
-								})
-								_this.toNewLabel()
-							} else if (res.code == 500) {
-								_this.$message({
-									type: 'error',
-									message: res.msg
-								})
-							}
-						}, err => {
-							console.log(err)
-						})
-					}
-				}).catch(() => {
+				if (value == '') {
 					_this.$message({
-						type: 'info',
-						message: '取消输入'
+						type: 'error',
+						message: '标签名称不能为空！'
 					})
-				})
+				} else {
+					saveLabel({
+						lableName: value
+					}, res => {
+						if (res.code == 200) {
+							_this.$message({
+								type: 'success',
+								message: res.data
+							})
+							_this.showPrompt = false
+							_this.toNewLabel()
+						} else if (res.code == 500) {
+							_this.$message({
+								type: 'error',
+								message: res.msg
+							})
+						}
+					}, err => {
+						console.log(err)
+					})
+				}
 			},
 			/**
 			 * 添加标签后跳转最后一页

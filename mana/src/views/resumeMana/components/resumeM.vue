@@ -1,41 +1,41 @@
 <template>
 	<div id="resumeM">
-		<div class="content">
+		<div class="content" style="width: 100%;">
 			<el-table ref="multipleTableResume" stripe :data="allResume" tooltip-effect="dark" style="width: 100%;" @select="deleteThisResume"
 			 :indeterminate="true" v-model="selectIndex">
-				<el-table-column type="selection" width="50">
+				<el-table-column type="selection" min-width="50">
 				</el-table-column>
-				<el-table-column type="index" label="序号" :index="indexMethod" width="50">
+				<el-table-column type="index" label="序号" :index="indexMethod" min-width="50">
 				</el-table-column>
-				<el-table-column prop="name" label="姓名" width="60">
+				<el-table-column prop="name" label="姓名" min-width="60">
 				</el-table-column>
 				<!-- <el-table-column prop="createDate" label="时间" width="60">
 		        </el-table-column> -->
-				<el-table-column label="发布时间" width="60">
+				<el-table-column label="发布时间" min-width="60">
 					<template slot-scope="scope">
 						<div>
 							{{scope.row.createDate | filterTime}}
 						</div>
 					</template>
 				</el-table-column>
-				<el-table-column prop="gender" label="性别" width="50">
+				<el-table-column prop="gender" label="性别" min-width="50">
 				</el-table-column>
-				<el-table-column prop="code" label="工号" width="80">
+				<el-table-column prop="code" label="工号" min-width="80">
 				</el-table-column>
-				<el-table-column prop="phone" label="手机号码" width="100">
+				<el-table-column prop="phone" label="手机号码" min-width="100">
 				</el-table-column>
-				<el-table-column prop="email" label="邮箱" width="160">
+				<el-table-column prop="email" label="邮箱" min-width="160">
 				</el-table-column>
-				<el-table-column prop="education" label="学历" width="80">
+				<el-table-column prop="education" label="学历" min-width="80">
 				</el-table-column>
-				<el-table-column prop="intention" label="竞聘岗位" width="100">
+				<el-table-column prop="intention" label="竞聘岗位" min-width="100">
 				</el-table-column>
-				<el-table-column label="技能标签" width="200">
+				<el-table-column label="技能标签" min-width="200">
 					<template slot-scope="scope">
 						{{scope.row.lableid}}
 					</template>
 				</el-table-column>
-				<el-table-column label="操作" width="100">
+				<el-table-column label="操作" min-width="100">
 					<template slot-scope="scope">
 						<el-button @click.native.prevent="downloadResume(scope.$index, allResume)" type="text" size="small">
 							下载
@@ -45,7 +45,7 @@
 						</el-button>
 					</template>
 				</el-table-column>
-				<el-table-column label="备注" width="50">
+				<el-table-column label="备注" min-width="50">
 					<template slot-scope="scope">
 						<el-button type="text" @click="addRemarks(scope.row.isRemarks,scope.row)">
 							{{scope.row.isRemarks == 0 ? '添加' : '查看'}}
@@ -110,7 +110,15 @@
 			getFilterList() {
 				const _this = this
 				_this.$bus.$on('filterList', (data) => {
+					// console.log(data)
+					data.forEach(item => {
+						// console.log(item.lableid)
+						if (item.lableid != null) {
+							item.lableid = item.lableid.substr(0, (item.lableid.length - 1))
+						}
+					})
 					_this.allResume = data
+					// console.log(data)
 				})
 			},
 			/**
@@ -374,8 +382,9 @@
 		},
 		filters: {
 			filterTime(item) {
+				// console.log(item)
 				// item.createDate = item.createDate.substr(5, 5) + '  ' + item.createDate.substr(11, 5)
-				return item.substr(0, 10) + '  ' + item.substr(11, 5)
+				return item.substr(0, 10) + '  ' + item.substr(11, 8)
 			}
 		}
 	}

@@ -68,3 +68,10 @@ export function saveResumeImage(params, success, failure) {
 export function signOut(success, failure) {
 	return request.post('user/signOut', success, failure)
 }
+
+/**
+ * 下载简历压缩包
+ */
+export function downloadZip(params, success, failure) {
+	return request.get('resume/uploadResume', params, success, failure)
+}

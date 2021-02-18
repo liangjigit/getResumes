@@ -67,7 +67,8 @@
 <script>
 	import html2canvas from 'html2canvas'
 	import {
-		saveResumeImage
+		saveResumeImage,
+		downloadZip
 	} from '@/network/api/index.js'
 	export default {
 		name: 'resume',
@@ -153,10 +154,23 @@
 					_this.getAllResumePicArr.push(res.data[0] + 'AIMERPERSONNEL' + _this.resumeTime + _this.soleData.name)
 					if ((_this.moreDataIndex + 1) == _this.moreDataLength) {
 						let getAllResumePicString = _this.getAllResumePicArr.join(',')
-						window.open('http://np.aimergroup.com:8081/api/resume/uploadResume?resumeStr=' + getAllResumePicString)
-						setTimeout(function() {
-							window.location.reload()
-						}, 2000)
+						// let downUrl = 'http://np.aimergroup.com:8081/api/resume/uploadResume?resumeStr=' + getAllResumePicString
+						// window.open(downUrl,"_self")
+						// setTimeout(function() {
+						// 	window.location.reload()
+						// }, 2000)
+						downloadZip({
+							resumeStr: getAllResumePicString
+						}, res => {
+							console.log(res)
+							console.log('压缩包下载成功')
+							_this.$message({
+								type: 'success',
+								message: '下载简历成功！'
+							});
+						}, err => {
+							consolr.log(err)
+						})
 					} else {
 						_this.moreDataIndex++
 						_this.moreResume()
@@ -195,6 +209,10 @@
 				document.body.appendChild(oA);
 				oA.click();
 				oA.remove(); // 下载之后把创建的元素删除
+				_this.$message({
+					type: 'success',
+					message: '下载简历成功！'
+				});
 			},
 		}
 	}
