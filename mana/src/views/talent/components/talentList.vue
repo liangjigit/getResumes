@@ -90,7 +90,7 @@
 		filters: {
 			filterTime(item) {
 				// item.createDate = item.createDate.substr(5, 5) + '  ' + item.createDate.substr(11, 5)
-				return item.substr(0, 10) + '  ' + item.substr(11, 5)
+				return item.substr(0, 10) + '  ' + item.substr(11, 8)
 			}
 		}
 	}

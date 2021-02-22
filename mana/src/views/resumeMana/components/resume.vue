@@ -82,7 +82,9 @@
 				//打包下载时的名称时间
 				resumeTime: '',
 				//获取所有建立图片得数组
-				getAllResumePicArr: []
+				getAllResumePicArr: [],
+				downloadLoading: {},
+				downloadTime: false
 			}
 		},
 		mounted() {
@@ -90,10 +92,22 @@
 			_this.$bus.$on('resumeShow', (data, label) => {
 				_this.soleData = data
 				_this.labelName = label
+				_this.downloadLoading = _this.$loading({
+					lock: true,
+					text: '努力下载简历中，请耐心等待',
+					spinner: 'el-icon-loading',
+					background: 'rgba(0, 0, 0, 0.7)'
+				})
 				_this.getCanvas()
 			})
 			_this.$bus.$on('moreResumeDownload', resumeArr => {
 				// console.log(resumeArr)
+				_this.downloadLoading = _this.$loading({
+					lock: true,
+					text: '努力下载打包中，请耐心等待',
+					spinner: 'el-icon-loading',
+					background: 'rgba(0, 0, 0, 0.7)'
+				})
 				_this.moreData = resumeArr
 				_this.moreDataLength = resumeArr.length
 				_this.moreResume()
@@ -105,6 +119,7 @@
 				const _this = this
 				_this.soleData = {}
 				//_this.moreDataIndex初始为0，从第一个开始取值
+				console.log(_this.moreData)
 				_this.soleData = _this.moreData[_this.moreDataIndex]
 				//对个人数据中标签进行转化
 				if (_this.soleData.lableid) {
@@ -150,27 +165,14 @@
 			saveImage(params) {
 				const _this = this
 				saveResumeImage(params, res => {
-					console.log(res)
+					// console.log(res)
 					_this.getAllResumePicArr.push(res.data[0] + 'AIMERPERSONNEL' + _this.resumeTime + _this.soleData.name)
 					if ((_this.moreDataIndex + 1) == _this.moreDataLength) {
 						let getAllResumePicString = _this.getAllResumePicArr.join(',')
-						// let downUrl = 'http://np.aimergroup.com:8081/api/resume/uploadResume?resumeStr=' + getAllResumePicString
-						// window.open(downUrl,"_self")
-						// setTimeout(function() {
-						// 	window.location.reload()
-						// }, 2000)
-						downloadZip({
-							resumeStr: getAllResumePicString
-						}, res => {
-							console.log(res)
-							console.log('压缩包下载成功')
-							_this.$message({
-								type: 'success',
-								message: '下载简历成功！'
-							});
-						}, err => {
-							consolr.log(err)
-						})
+						let downUrl = 'http://np.aimergroup.com:8081/api/resume/uploadResume?resumeStr=' + getAllResumePicString
+						_this.downloadTime = true
+						_this.moreDataIndex = 0
+						_this.downLoad(downUrl)
 					} else {
 						_this.moreDataIndex++
 						_this.moreResume()
@@ -209,10 +211,24 @@
 				document.body.appendChild(oA);
 				oA.click();
 				oA.remove(); // 下载之后把创建的元素删除
-				_this.$message({
-					type: 'success',
-					message: '下载简历成功！'
-				});
+				if (_this.downloadTime == true) {
+					_this.downloadTime = false
+					window.setTimeout(() => {
+						_this.downloadLoading.close()
+						_this.$message({
+							type: 'success',
+							message: '下载简历成功！'
+						});
+					}, 3000)
+				} else {
+					window.setTimeout(() => {
+						_this.downloadLoading.close()
+						_this.$message({
+							type: 'success',
+							message: '下载简历成功！'
+						});
+					}, 1000)
+				}
 			},
 		}
 	}

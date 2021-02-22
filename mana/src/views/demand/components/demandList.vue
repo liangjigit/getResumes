@@ -97,7 +97,8 @@
 				let day = time.getDate()
 				let hour = time.getHours()
 				let min = time.getMinutes()
-				let timeStr = `${year}-${month < 10 ? `0${month}`:month}-${day < 10 ? `0${day}`:day}  ${hour<10?`0${hour}`:hour}:${min<10?`0${min}`:min}`
+				let second = time.getSeconds()
+				let timeStr = `${year}-${month < 10 ? `0${month}`:month}-${day < 10 ? `0${day}`:day}  ${hour<10?`0${hour}`:hour}:${min<10?`0${min}`:min}:${second<10?`0${second}`:second}`
 				return timeStr
 			}
 		}

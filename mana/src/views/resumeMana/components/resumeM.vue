@@ -147,7 +147,7 @@
 					selectArr.push(item.id)
 				}
 				this.resumeSelectId = selectArr
-				// console.log(this.resumeSelectId)
+				console.log(this.resumeSelectId)
 			},
 			/**
 			 * 全选简历
@@ -159,11 +159,11 @@
 						this.resumeSelectId.push(item.id)
 					}
 					this.$refs.multipleTableResume.toggleAllSelection();
-					// console.log(this.resumeSelectId)
+					console.log(this.resumeSelectId)
 				} else {
 					this.resumeSelectId = []
 					this.$refs.multipleTableResume.clearSelection();
-					// console.log(this.resumeSelectId)
+					console.log(this.resumeSelectId)
 				}
 			},
 			/**
@@ -342,12 +342,6 @@
 						confirmButtonText: '确定'
 					})
 				} else {
-					_this.$loading({
-						lock: true,
-						text: '努力下载打包中，请耐心等待',
-						spinner: 'el-icon-loading',
-						background: 'rgba(0, 0, 0, 0.7)'
-					})
 					//将选择的用户id拼接成为字符串
 					let idString = _this.resumeSelectId.join(',')
 					_this.getMoreResume(idString)

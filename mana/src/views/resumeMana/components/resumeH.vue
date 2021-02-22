@@ -63,10 +63,12 @@
 					<ul style="display: flex;flex-wrap: wrap;margin: 0;padding: 0;">
 						<li style="list-style: none;margin-right: 30px;">
 							<div class="block">
-								<el-date-picker @change="getSeTimeStart" v-model="timeValueStart" value-format="yyyy/MM/dd" align="left" type="date"
-								 placeholder="开始日期" :picker-options="pickerOptions">
+								<el-date-picker :clearable="false" @change="getSeTimeStart" v-model="timeValueStart" value-format="yyyy/MM/dd"
+								 align="left" type="date" placeholder="开始日期" :picker-options="pickerOptions">
 								</el-date-picker>
-								<el-date-picker @change="getSeTimeEnd" v-model="timeValueEnd" value-format="yyyy/MM/dd" type="date" placeholder="至今">
+								&nbsp;&nbsp;&nbsp;&nbsp;
+								<el-date-picker :clearable="false" @change="getSeTimeEnd" v-model="timeValueEnd" value-format="yyyy/MM/dd" type="date"
+								 placeholder="至今">
 								</el-date-picker>
 							</div>
 						</li>
@@ -117,15 +119,19 @@
 						text: '一周内',
 						onClick(picker) {
 							const date = new Date();
+							let nowTime = date.getFullYear() + '/' + (date.getMonth() + 1) + '/' + date.getDate()
 							date.setTime(date.getTime() - 3600 * 1000 * 24 * 7);
 							picker.$emit('pick', date);
+							picker.$bus.$emit('termTime', nowTime)
 						}
 					}, {
 						text: '一个月内',
 						onClick(picker) {
 							const date = new Date();
+							let nowTime = date.getFullYear() + '/' + (date.getMonth() + 1) + '/' + date.getDate()
 							date.setTime(date.getTime() - 3600 * 1000 * 24 * 30);
 							picker.$emit('pick', date);
+							picker.$bus.$emit('termTime', nowTime)
 						}
 					}]
 				},
@@ -149,6 +155,13 @@
 		created() {
 			const _this = this
 			_this.getAllLabel()
+		},
+		mounted() {
+			const _this = this
+			_this.$bus.$on('termTime', time => {
+				this.timeValueEnd = time
+				_this.getSeTimeEnd(time)
+			})
 		},
 		methods: {
 			/**
@@ -270,21 +283,20 @@
 				// console.log(data)
 				this.searchCan.start = data
 				console.log(this.searchCan.start)
-				this.getSeTimeEnd()
+				const date = new Date();
+				let nowTime = date.getFullYear() + '/' + (date.getMonth() + 1) + '/' + date.getDate()
+				if (this.timeValueEnd == '') {
+					this.getSeTimeEnd(nowTime)
+				} else {
+					this.getSeTimeEnd(this.timeValueEnd)
+				}
 			},
 			/**
 			 * 获取结束的时间
 			 */
 			getSeTimeEnd(data) {
 				// console.log(data)
-				if (data == undefined) {
-					const date = new Date();
-					let nowTime = date.getFullYear() + '/' + (date.getMonth() + 1) + '/' + date.getDate()
-					// console.log(nowTime)
-					this.searchCan.end = nowTime
-				} else {
-					this.searchCan.end = data
-				}
+				this.searchCan.end = data
 				console.log(this.searchCan.end)
 			},
 			/**
@@ -300,7 +312,7 @@
 			 */
 			searchPnc() {
 				const _this = this
-				_this.$bus.$emit('delInputCan',JSON.stringify(_this.searchInput))
+				_this.$bus.$emit('delInputCan', JSON.stringify(_this.searchInput))
 			},
 			/**
 			 * 清空简历信息
