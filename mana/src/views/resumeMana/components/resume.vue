@@ -1,9 +1,10 @@
 <template>
-	<div id="resume">
-		<div v-if="soleData.name" class="show-resume" style="position: fixed;z-index: -9999999; width: 595px;height:842px;margin-left: 20%;overflow: auto;line-height: 1.8;text-align: left;">
+	<div id="resume" ref="resumeBack" style="position: fixed;width: 100%;height: 100%;background: rgba(0,0,0,0.12);z-index: 1;">
+		<div ref="resumePage" v-if="soleData.name" class="show-resume" style="position: fixed;background: white;z-index: 2; width: 595px;height:842px;overflow: auto;line-height: 1.8;text-align: left;">
 			<div class="test" id="test" ref="test">
-				<div style="font-size: 20px;color: red;margin-left: 3%;">AIMER<br>
-				</div>
+				<header style="font-size: 30px;display: flex;justify-content: space-between;margin: auto 20px;align-items: center;">
+					<span style="color: red;">AIMER</span> <i v-if="showClose" @click="closeResume" style="cursor: pointer;" class="el-icon-error"></i>
+				</header>
 				<hr>
 				<div style="display: flex;justify-content: center;">
 					<div style="width: 5%;"></div>
@@ -36,8 +37,8 @@
 						<div style="border-bottom: 1px solid;margin-bottom: 10px;">
 							<div style="font-size: 21px;margin-bottom: 5px;"> <span style="font-size: 15px;">|</span> 基本信息</div>
 							<div style="font-size: 12px;margin-bottom: 5px;">
-								<span>性别：{{soleData.gender}}</span>
-								<span>学历：{{soleData.education}}</span>
+								<span style="margin-right: 8px;">性别：{{soleData.gender}}</span>
+								<span style="margin-right: 8px;">学历：{{soleData.education}}</span>
 								<span>工号：{{soleData.code}}</span>
 							</div>
 							<div style="font-size: 12px;margin-bottom: 5px;">部门：{{soleData.department}}</div>
@@ -84,14 +85,25 @@
 				//获取所有建立图片得数组
 				getAllResumePicArr: [],
 				downloadLoading: {},
-				downloadTime: false
+				downloadTime: false,
+				showClose: false
 			}
 		},
 		mounted() {
 			const _this = this
-			_this.$bus.$on('resumeShow', (data, label) => {
+			_this.$bus.$on('resumeShow', (data, label, type) => {
 				_this.soleData = data
 				_this.labelName = label
+				if (type == 'see') {
+					_this.$nextTick(() => {
+						_this.$refs.resumeBack.style.top = 0
+						_this.$refs.resumePage.style.left = '50%'
+						_this.$refs.resumePage.style.top = '50%'
+						_this.$refs.resumePage.style.transform = 'translate(-50%,-50%)'
+						_this.showClose = true
+					})
+					return
+				}
 				_this.downloadLoading = _this.$loading({
 					lock: true,
 					text: '努力下载简历中，请耐心等待',
@@ -114,12 +126,25 @@
 			})
 		},
 		methods: {
+			/**
+			 * 关闭展示简历
+			 */
+			closeResume() {
+				const _this = this
+				_this.$nextTick(() => {
+					_this.$refs.resumeBack.style.top = ''
+					_this.$refs.resumePage.style.left = ''
+					_this.$refs.resumePage.style.top = ''
+					_this.$refs.resumePage.style.transform = ''
+					_this.showClose = false
+				})
+			},
 			//对简历逐个循环下载
 			moreResume() {
 				const _this = this
 				_this.soleData = {}
 				//_this.moreDataIndex初始为0，从第一个开始取值
-				console.log(_this.moreData)
+				// console.log(_this.moreData)
 				_this.soleData = _this.moreData[_this.moreDataIndex]
 				//对个人数据中标签进行转化
 				if (_this.soleData.lableid) {
@@ -213,6 +238,7 @@
 				oA.remove(); // 下载之后把创建的元素删除
 				if (_this.downloadTime == true) {
 					_this.downloadTime = false
+					_this.getAllResumePicArr = []
 					window.setTimeout(() => {
 						_this.downloadLoading.close()
 						_this.$message({

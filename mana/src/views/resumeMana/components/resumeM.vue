@@ -37,7 +37,10 @@
 				</el-table-column>
 				<el-table-column label="操作" min-width="100">
 					<template slot-scope="scope">
-						<el-button @click.native.prevent="downloadResume(scope.$index, allResume)" type="text" size="small">
+						<el-button @click.native.prevent="downloadResume(scope.$index, allResume,'see')" type="text" size="small">
+							查看
+						</el-button>
+						<el-button @click.native.prevent="downloadResume(scope.$index, allResume,'download')" type="text" size="small">
 							下载
 						</el-button>
 						<el-button @click.native.prevent="deleteResume(scope.$index, allResume)" type="text" size="small">
@@ -147,7 +150,7 @@
 					selectArr.push(item.id)
 				}
 				this.resumeSelectId = selectArr
-				console.log(this.resumeSelectId)
+				// console.log(this.resumeSelectId)
 			},
 			/**
 			 * 全选简历
@@ -159,11 +162,11 @@
 						this.resumeSelectId.push(item.id)
 					}
 					this.$refs.multipleTableResume.toggleAllSelection();
-					console.log(this.resumeSelectId)
+					// console.log(this.resumeSelectId)
 				} else {
 					this.resumeSelectId = []
 					this.$refs.multipleTableResume.clearSelection();
-					console.log(this.resumeSelectId)
+					// console.log(this.resumeSelectId)
 				}
 			},
 			/**
@@ -298,13 +301,13 @@
 			/**
 			 * 下载个人简历,获取id
 			 */
-			downloadResume(i, arr) {
+			downloadResume(i, arr, type) {
 				//console.log(i, arr, arr[i].id)
 				let downloadId = arr[i].id
-				this.getSoleResume(downloadId)
+				this.getSoleResume(downloadId, type)
 			},
 			//获取指定单人的简历信息
-			getSoleResume(resumeId) {
+			getSoleResume(resumeId, type) {
 				const _this = this
 				resumeDownload({
 					resumeId
@@ -325,7 +328,7 @@
 							"<pre style='white-space: pre-wrap;white-space: -moz-pre-wrap;white-space: -pre-wrap;white-space: -o-pre-wrap;word-wrap: break-word;font-size: 12px;font-family: Arial, Helvetica, sans-serif;'>" +
 							soleData.experience + '</pre>'
 						// console.log(soleData)
-						_this.$bus.$emit('resumeShow', soleData, _this.labelName)
+						_this.$bus.$emit('resumeShow', soleData, _this.labelName, type)
 					}
 				}, err => {
 					console.log(err)
